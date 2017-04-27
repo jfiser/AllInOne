@@ -48,7 +48,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class Browsy {
 
-static GuiPane myGui;
+static GuiPane guiPane;
 //static ArrayList<Steps> stepsList = new ArrayList<Steps>();
 static String curUrlBeingTested = "";
 static File requestPingFile;
@@ -70,12 +70,12 @@ static ArrayList<TestCase> testCaseArr;
 
 //stepsList[0] = "className|vjs-big-play-button";
 //stepsList.push("className|vjs-big-play-button");
-	//myGui.addTextToPane("str"); 
+	//guiPane.addTextToPane("str"); 
 
 public static void main(String[] args) {	
 	//TestCaseSetup testCaseSetup = new TestCaseSetup();
 	testCaseArr = TestCaseSetup.createTestCaseArr();
-	myGui = new GuiPane(testCaseArr);
+	guiPane = new GuiPane(testCaseArr);
 
 	//System.setProperty("webdriver.chrome.driver", "/ChromeDriver/chromedriver.exe");
 	System.setProperty("webdriver.chrome.driver", "chromedriver");
@@ -96,7 +96,7 @@ public static void main(String[] args) {
 			 String bldv = "";
 
 			 if(urlStr.indexOf("imrworld") != -1){ // || urlStr.indexOf("facebook") != -1){
-	        	//myGui.addTextToPane(cnt++ + ". " + urlStr + "\n\n");
+	        	//guiPane.addTextToPane(cnt++ + ". " + urlStr + "\n\n");
 	        	try {
 					if(firstPing){ // open a new file - don't just append
 						firstPing = false;
@@ -107,6 +107,7 @@ public static void main(String[] args) {
 		        		FileUtils.writeStringToFile(requestPingFile, urlStr + System.getProperty("line.separator"), Charset.defaultCharset(), true); //Charset.defaultCharset());
 					}
 					System.out.println("handlePing>: " + urlStr);
+					guiPane.addTextToPane(urlStr + "\n");
 					//FileUtils.writeStringToFile(requestPingFile, str + '\n', Charset.defaultCharset());
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -132,7 +133,7 @@ public static void main(String[] args) {
     			gotPlayerVersion = true;
      			playerVersion = thirdPartyPlayer.getPlayerVersion(urlStr);
      			
-    			//myGui.addTextToPane(">>>>>>>>>> Player Version: " + playerVersion + '\n');
+    			//guiPane.addTextToPane(">>>>>>>>>> Player Version: " + playerVersion + '\n');
 				System.out.println(">>>>>>>>>> Player Version: " + playerVersion);
     			try {
 					FileUtils.writeStringToFile(bcPlayerVersionFile, playerVersion, Charset.defaultCharset());
@@ -151,12 +152,12 @@ public static void main(String[] args) {
          public void filterResponse(HttpResponse response, HttpMessageContents contents, HttpMessageInfo messageInfo) {
         	 String urlStr = messageInfo.getOriginalUrl();
 			 //if(urlStr.indexOf("imrworld") != -1 || urlStr.indexOf("facebook") != -1){
-		        	//myGui.addTextToPane("response::: " + urlStr + '\n');
+		        	//guiPane.addTextToPane("response::: " + urlStr + '\n');
 			 //}
         	 
         	 if(urlStr.indexOf("imrworld") != -1 && urlStr.indexOf("configs/glcfg") != -1){
         		 String str = contents.getTextContents();
-        		 myGui.addTextToPane("response from :" + urlStr + '\n' + urlStr + '\n');
+        		 guiPane.addTextToPane("response from :" + urlStr + '\n' + urlStr + '\n');
 			 }
          }
      });*/
@@ -213,7 +214,7 @@ public static void main(String[] args) {
     driver.quit();
     Comparator.getPingFileCreateArray("BSDK_BC_plugin_requestPings.txt", "cur");
     curSessionPingArr = Comparator.compare();
-
+    guiPane.enableBtnSetBaseline();
  }
  public static void setTimeout(Runnable runnable, int delay){
     new Thread(() -> {
