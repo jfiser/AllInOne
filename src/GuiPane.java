@@ -2,18 +2,26 @@
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+
 import javax.swing.*;
 
 public class GuiPane extends JPanel {
 	
 static String comboSelected = "";
 static String testCaseToMakeValid = "";
-static String[] testCases = { "BC_TestPlayer", "testCase2", "testCase3", "testCase4", "testCase5" };
+static String testCaseToRun = "";
+static String[] testCases = new String[50]; // = { "BC_TestPlayer", "testCase2", "testCase3", "testCase4", "testCase5" };
 
 
-public GuiPane() {
+public GuiPane(ArrayList<TestCase> _testCaseArr) {
     //super(new BorderLayout());
+	for (int i = 0; i < _testCaseArr.size(); i++) {
+		testCases[i] = _testCaseArr.get(i).testCaseId;
+		System.out.println("testCaseArr>: " + _testCaseArr.get(i));
+	}
     comboSelected = testCases[0];
+
     createAndShowGUI(this);
 }
 private static void createAndShowGUI(GuiPane guiPane) {
@@ -73,8 +81,9 @@ private static void addBtnRunTest(GuiPane _guiPane){
     // Set up the event listener for baseline button
     btnRunTest.addActionListener(new ActionListener(){
         public void actionPerformed(ActionEvent e){
-        	testCaseToMakeValid = comboSelected;
-        	System.out.println("testCaseToMakeValid: " + testCaseToMakeValid);
+        	testCaseToRun = comboSelected;
+        	System.out.println("testCaseToRun: " + testCaseToRun);
+        	Browsy.doTest(testCaseToRun);
         }
     });
 	
