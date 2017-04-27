@@ -48,8 +48,8 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class Browsy {
 
-static GuiPane myGui = new GuiPane();
-static ArrayList<Steps> stepsList = new ArrayList<Steps>();
+static GuiPane myGui;
+//static ArrayList<Steps> stepsList = new ArrayList<Steps>();
 static String curUrlBeingTested = "";
 static File requestPingFile;
 static File bcPlayerVersionFile = new File("BSDK_BC_plugin_playerVersion.txt");
@@ -62,6 +62,10 @@ static Boolean firstPing = true;
 static String[][] curSessionPingArr;
 static boolean hasId3 = false;
 
+static WebDriver driver;
+static BrowserMobProxy bmpProxy;
+static ArrayList<TestCase> testCaseArr;
+
 //static Array<Steps> stepsList = new Array<Steps>();
 
 //stepsList[0] = "className|vjs-big-play-button";
@@ -69,44 +73,17 @@ static boolean hasId3 = false;
 	//myGui.addTextToPane("str"); 
 
 public static void main(String[] args) {	
-	//JScrollPaneDemo myGui = new JScrollPaneDemo();
-	//System.out.println("myGui: " + myGui);
-	stepsList.add(new Steps("http://players.brightcove.net/1660646664/BJvGXLtr_default/index.html?playlistId=5047277540001", 
-	//stepsList.add(new Steps("http://engtestsite.com/joel/autoTest/autoTestPage.html",
-	//stepsList.add(new Steps("http://players.brightcove.net/1660646664/r1TpAMg2x_default/index.html?playlistId=5367485968001",
-								"className", 
-								"vjs-big-play-button",  //*[@id="vjs_video_3"]/button
-								25,
-								"leftClick"));
-	/*stepsList.add(new Steps("sameUrl", 
-								"xpath", 
-								"/html/body/ol/li[3]",
-								10,
-								"leftClick"));
+	//TestCaseSetup testCaseSetup = new TestCaseSetup();
+	testCaseArr = TestCaseSetup.createTestCaseArr();
+	myGui = new GuiPane(testCaseArr);
 
-	stepsList.add(new Steps("http://discovery.com", 
-								"id", 
-								"menu-item-192593",
-								10,
-								"leftClick"));*/
-
-	/*stepsList.add(new Steps("http://cnn.com", 
-			"className", 
-			"vjs-big-play-button"));*/
-	
 	//System.setProperty("webdriver.chrome.driver", "/ChromeDriver/chromedriver.exe");
 	System.setProperty("webdriver.chrome.driver", "chromedriver");
    
-	  try {
-		  Comparator.getPingFileCreateArray("BSDK_BC_plugin_requestPings.txt", "prev");
-		  setProxy();
-	} catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
+	Comparator.getPingFileCreateArray("BSDK_BC_plugin_requestPings.txt", "prev");
  }
  public static void setProxy() throws IOException{
-	 BrowserMobProxy bmpProxy = new BrowserMobProxyServer();
+	 bmpProxy = new BrowserMobProxyServer();
 	 bmpProxy.start(0);
 
 	 bmpProxy.addRequestFilter(new RequestFilter() {
@@ -193,19 +170,20 @@ public static void main(String[] args) {
 
     Proxy seleniumProxy = ClientUtil.createSeleniumProxy(bmpProxy);
     System.out.println("seleniumProxy: " + seleniumProxy);
+    
     DesiredCapabilities capabilities = new DesiredCapabilities();
     capabilities.setCapability(CapabilityType.PROXY, seleniumProxy);
 
     // start the browser up
     //WebDriver driver = new FirefoxDriver(capabilities);
-    WebDriver driver = new ChromeDriver(capabilities);
+    driver = new ChromeDriver(capabilities);
 
     // enable more detailed HAR capture, if desired (see CaptureType for the complete list)
     bmpProxy.enableHarCaptureTypes(CaptureType.REQUEST_CONTENT, CaptureType.RESPONSE_CONTENT);
 
     // create a new HAR 
     bmpProxy.newHar("Browsy.har");
-    doTest(driver);
+    //doTest(driver);
     //driver.get("http://google.com");    
     
     // get the HAR data
@@ -215,53 +193,92 @@ public static void main(String[] args) {
 	har.writeTo(harFile);
     
     System.out.println("har: " + har);
-    bmpProxy.stop();
-    driver.quit();
-    Comparator.getPingFileCreateArray("BSDK_BC_plugin_requestPings.txt", "cur");
-    curSessionPingArr = Comparator.compare();
+    //bmpProxy.stop();
+    //driver.quit();
+    //Comparator.getPingFileCreateArray("BSDK_BC_plugin_requestPings.txt", "cur");
+    //curSessionPingArr = Comparator.compare();
     //if(hasId3){
     	//ID3_Validator.check_D_Pings(curSessionPingArr);
     //}
  }
- public static void doTest(WebDriver _driver){
+ public static void startBrowser(){
+	try {
+		setProxy();
+	} catch (IOException e) {
+		e.printStackTrace();
+	}
+ }
+ public static void killBrowser(){
+    bmpProxy.stop();
+    driver.quit();
+    Comparator.getPingFileCreateArray("BSDK_BC_plugin_requestPings.txt", "cur");
+    curSessionPingArr = Comparator.compare();
+
+ }
+ public static void setTimeout(Runnable runnable, int delay){
+    new Thread(() -> {
+        try {
+            Thread.sleep(delay);
+            runnable.run();
+        }
+        catch (Exception e){
+            System.err.println(e);
+        }
+    }).start();
+}
+ public static void doTest(String _testCaseToRun){
+	 ArrayList<Steps> stepsList = null;
+	 startBrowser();
+	 
 	 WebElement btnToClick = null;
+	 for(int i = 0; i < testCaseArr.size(); i++){
+		 if(testCaseArr.get(i).testCaseId == _testCaseToRun){
+			 stepsList = testCaseArr.get(i).stepsList;
+		 }
+	 }
+	 if(stepsList == null){
+		 System.out.println("Cannot find testCase: " + _testCaseToRun);
+		 return;
+	 }
+	 
 	 for (int i = 0; i < stepsList.size(); i++) {
 		 System.out.println(stepsList.get(i));
 		 // go to the URL to test unless the URL param is set to "sameUrl"
 		 if(stepsList.get(i).urlToTest != "sameUrl" && stepsList.get(i).urlToTest != curUrlBeingTested){
-			 _driver.get(stepsList.get(i).urlToTest);
+			 driver.get(stepsList.get(i).urlToTest);
 		 }
 		 // Can use class, id, or xpath as selector
 		 if(stepsList.get(i).accessorType == "className"){
-			 btnToClick = (new WebDriverWait(_driver, 20))
+			 btnToClick = (new WebDriverWait(driver, 20))
 		    		  .until(ExpectedConditions.elementToBeClickable(By.className(stepsList.get(i).accessorName)));
 			 
 		 }
 		 else
 		 if(stepsList.get(i).accessorType == "id"){
-			 btnToClick = (new WebDriverWait(_driver, 20))
+			 btnToClick = (new WebDriverWait(driver, 20))
 		    		  .until(ExpectedConditions.elementToBeClickable(By.id(stepsList.get(i).accessorName)));
 			 
 		 }
 		 else
 		 if(stepsList.get(i).accessorType == "xpath"){
-			 btnToClick = (new WebDriverWait(_driver, 20))
+			 btnToClick = (new WebDriverWait(driver, 20))
 		    		  .until(ExpectedConditions.elementToBeClickable(By.xpath(stepsList.get(i).accessorName)));
 			 
 		 }
 		 // Haven't yet added rightClick stuff - haven't needed it yet			 
 		 btnToClick.click();
-		 
 		// Now thread sleep for however long specified while testing occurs 
-	    try {
+		 setTimeout(() -> killBrowser(), stepsList.get(i).duration * 1000);
+	    /*try {
 			Thread.sleep(stepsList.get(i).duration * 1000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
-		}  
+		} */ 
 			
 	}
 	 
  }
+	 
  
 }
        
