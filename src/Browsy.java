@@ -48,7 +48,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class Browsy {
 
-//static GuiPane myGui = new GuiPane();
+static GuiPane myGui = new GuiPane();
 static ArrayList<Steps> stepsList = new ArrayList<Steps>();
 static String curUrlBeingTested = "";
 static File requestPingFile;
