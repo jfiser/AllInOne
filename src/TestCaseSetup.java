@@ -26,7 +26,11 @@ public static ArrayList<TestCase> createTestCaseArr() {
 										"menu-item-192593",
 										10,
 										"leftClick"));*/
-	testCaseArr.add(new TestCase("testCase01", stepsList1));
+	testCaseArr.add(new TestCase("testCase1", 
+								stepsList1, 
+								"base_testCase1.txt", 
+								"dcr",
+								"c27,c51,c52,cr,rnd"));
 	
 	// TestCase 2
 	ArrayList<Steps> stepsList2 = new ArrayList<Steps>();
@@ -35,7 +39,11 @@ public static ArrayList<TestCase> createTestCaseArr() {
 										"vjs-big-play-button",  //*[@id="vjs_video_3"]/button
 										25,
 										"leftClick"));
-	testCaseArr.add(new TestCase("testCase02", stepsList2));
+	testCaseArr.add(new TestCase("testCase2", 
+								stepsList2, 
+								"base_testCase2.txt", 
+								"dcr",
+								"c27,c51,c52,cr"));
 	
 	return(testCaseArr);
 }

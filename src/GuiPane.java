@@ -2,6 +2,10 @@
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -73,15 +77,16 @@ private static void addBtnBaseline(GuiPane _guiPane){
         public void actionPerformed(ActionEvent e){
         	testCaseToMakeValid = comboSelected;
         	System.out.println("testCaseToMakeValid: " + testCaseToMakeValid);
+        	// If adding a baseline file, just change the filename of the currentRunPings.txt file to the current testCase name
+        	Path source = Paths.get("currentRunPings.txt");
+        	try {
+				Files.move(source, source.resolveSibling("base_" + comboSelected + ".txt"));
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
         }
     });
 	
-}
-public static void disableBtnSetBaseline(){
-	btnSetBaseline.setEnabled(false); 
-}
-public void enableBtnSetBaseline(){
-	btnSetBaseline.setEnabled(true); 
 }
 private static void addBtnRunTest(GuiPane _guiPane){
     JButton btnRunTest = new JButton("Run Test");
@@ -96,6 +101,13 @@ private static void addBtnRunTest(GuiPane _guiPane){
         	Browsy.doTest(testCaseToRun);
         }
     });
+}
+
+public static void disableBtnSetBaseline(){
+	btnSetBaseline.setEnabled(false); 
+}
+public void enableBtnSetBaseline(){
+	btnSetBaseline.setEnabled(true); 
 }
 public static void addPingTextHolder(GuiPane _guiPane){
 	SwingUtilities.invokeLater(new Runnable()
@@ -133,7 +145,7 @@ public static void addPingTextHolder(GuiPane _guiPane){
 	pingTextHolder.setFont(pingTextHolder.getFont().deriveFont(50f));
     _guiPane.add(pingTextHolder);
 }*/
-public void addTextToPane(String str){
+public static void addTextToPane(String str){
 	  GuiPane.pingTextArea.append(str);
 }
 

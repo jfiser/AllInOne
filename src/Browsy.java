@@ -61,6 +61,7 @@ static Boolean gotPlayerVersion = false;
 static Boolean firstPing = true;
 static String[][] curSessionPingArr;
 static boolean hasId3 = false;
+static TestCase currentTestCase = null;
 
 static WebDriver driver;
 static BrowserMobProxy bmpProxy;
@@ -80,7 +81,7 @@ public static void main(String[] args) {
 	//System.setProperty("webdriver.chrome.driver", "/ChromeDriver/chromedriver.exe");
 	System.setProperty("webdriver.chrome.driver", "chromedriver");
    
-	Comparator.getPingFileCreateArray("BSDK_BC_plugin_requestPings.txt", "prev");
+	//Comparator.getPingFileCreateArray("currentRunPings.txt", "prev");
  }
  public static void setProxy() throws IOException{
 	 bmpProxy = new BrowserMobProxyServer();
@@ -100,7 +101,7 @@ public static void main(String[] args) {
 	        	try {
 					if(firstPing){ // open a new file - don't just append
 						firstPing = false;
-						requestPingFile = new File("BSDK_BC_plugin_requestPings.txt"); // only open file after Comparator has read previous one
+						requestPingFile = new File("currentRunPings.txt"); // only open file after Comparator has read previous one
 						FileUtils.writeStringToFile(requestPingFile, urlStr + System.getProperty("line.separator"), Charset.defaultCharset()); //Charset.defaultCharset());
 					}
 					else{ // now append
@@ -196,7 +197,7 @@ public static void main(String[] args) {
     System.out.println("har: " + har);
     //bmpProxy.stop();
     //driver.quit();
-    //Comparator.getPingFileCreateArray("BSDK_BC_plugin_requestPings.txt", "cur");
+    //Comparator.getPingFileCreateArray("currentRunPings.txt", "cur");
     //curSessionPingArr = Comparator.compare();
     //if(hasId3){
     	//ID3_Validator.check_D_Pings(curSessionPingArr);
@@ -212,9 +213,12 @@ public static void main(String[] args) {
  public static void killBrowser(){
     bmpProxy.stop();
     driver.quit();
-    Comparator.getPingFileCreateArray("BSDK_BC_plugin_requestPings.txt", "cur");
-    curSessionPingArr = Comparator.compare();
     guiPane.enableBtnSetBaseline();
+    // Now get the baseline file for comparison
+    //Comparator.getPingFileCreateArray("currentRunPings.txt", "base");
+    // Get the current file (the one I just ran) for comparison
+    //Comparator.getPingFileCreateArray("currentRunPings.txt", "cur");
+    curSessionPingArr = Comparator.compare();
  }
  public static void setTimeout(Runnable runnable, int delay){
     new Thread(() -> {
@@ -235,6 +239,7 @@ public static void main(String[] args) {
 	 for(int i = 0; i < testCaseArr.size(); i++){
 		 if(testCaseArr.get(i).testCaseId == _testCaseToRun){
 			 stepsList = testCaseArr.get(i).stepsList;
+			 currentTestCase = testCaseArr.get(i);
 		 }
 	 }
 	 if(stepsList == null){
