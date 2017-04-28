@@ -90,6 +90,7 @@ public static String[][] compare(){
 private static void getPingType(String[] _pingValuesArr){
 	for(int i = 0; i < _pingValuesArr.length; i++){
 		System.out.println("getType: " + _pingValuesArr[i]);
+		
 		if(_pingValuesArr[i].equals("at=start")){
 			GuiPane.addTextToPane("_______________________\nComparing 'I' ping...\n_______________________\n");	
 		}

@@ -13,7 +13,7 @@ public static ArrayList<TestCase> createTestCaseArr() {
 	stepsList1.add(new Steps("http://players.brightcove.net/1660646664/BJvGXLtr_default/index.html?playlistId=5047277540001", 
 										"className", 
 										"vjs-big-play-button",  //*[@id="vjs_video_3"]/button
-										25,
+										600,
 										"leftClick"));
 			/*stepsList.add(new Steps("sameUrl", 
 										"xpath", 
