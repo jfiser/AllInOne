@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -80,7 +81,7 @@ private static void addBtnBaseline(GuiPane _guiPane){
         	// If adding a baseline file, just change the filename of the currentRunPings.txt file to the current testCase name
         	Path source = Paths.get("currentRunPings.txt");
         	try {
-				Files.move(source, source.resolveSibling("base_" + comboSelected + ".txt"));
+				Files.move(source, source.resolveSibling("base_" + comboSelected + ".txt"), StandardCopyOption.REPLACE_EXISTING);
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
