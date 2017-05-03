@@ -210,27 +210,6 @@ public static void main(String[] args) {
 		e.printStackTrace();
 	}
  }
- public static void killBrowser(){
-    bmpProxy.stop();
-    driver.quit();
-    guiPane.enableBtnSetBaseline();
-    // Now get the baseline file for comparison
-    //Comparator.getPingFileCreateArray("currentRunPings.txt", "base");
-    // Get the current file (the one I just ran) for comparison
-    //Comparator.getPingFileCreateArray("currentRunPings.txt", "cur");
-    curSessionPingArr = Comparator.compare();
- }
- public static void setTimeout(Runnable runnable, int delay){
-    new Thread(() -> {
-        try {
-            Thread.sleep(delay);
-            runnable.run();
-        }
-        catch (Exception e){
-            System.err.println(e);
-        }
-    }).start();
-}
  public static void doTest(String _testCaseToRun){
 	 ArrayList<Steps> stepsList = null;
 	 startBrowser();
@@ -279,11 +258,26 @@ public static void main(String[] args) {
 			Thread.sleep(stepsList.get(i).duration * 1000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
-		} */ 
-			
-	}
-	 
+		} */ 			
+	} 
  }
+ public static void setTimeout(Runnable runnable, int delay){
+    new Thread(() -> {
+        try {
+            Thread.sleep(delay);
+            runnable.run();
+        }
+        catch (Exception e){
+            System.err.println(e);
+        }
+    }).start();
+}
+ public static void killBrowser(){
+	    bmpProxy.stop();
+	    driver.quit();
+	    guiPane.enableBtnSetBaseline();
+	    curSessionPingArr = Comparator.compare();
+	 }
 	 
  
 }
