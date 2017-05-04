@@ -21,20 +21,33 @@ static JButton btnSetBaseline;
 static JTextField pingTextHolder;
 static JTextArea pingTextArea = new JTextArea();
 static JFrame frame;
+static JComboBox testCaseCombo;
+static DefaultComboBoxModel comboModel;
+//static ArrayList<TestCase> testCaseArr;
 
 public GuiPane(ArrayList<TestCase> _testCaseArr) {
     //super(new BorderLayout());
+	//testCaseArr = _testCaseArr;
 	for (int i = 0; i < _testCaseArr.size(); i++) {
 		testCases[i] = _testCaseArr.get(i).testCaseId;
-		System.out.println("testCaseArr>: " + _testCaseArr.get(i));
+		if(_testCaseArr.get(i).baseFileName != null){
+			testCases[i] = testCases[i] + " (Has baseline)";
+		}
+		else{
+			testCases[i] = testCases[i] + " (No baseline)";
+		}
+		System.out.println("testCaseArr>>: " + _testCaseArr.get(i).testCaseId);
 	}
-    comboSelected = testCases[0];
+    //comboSelected = testCases[0];
+    //comboSelected = testCases[0].split(" \\(")[0];
+    comboSelected = stripBaselineComment(testCases[0]);
 
     createAndShowGUI(this);
 }
 private static void createAndShowGUI(GuiPane guiPane) {
 	javax.swing.SwingUtilities.invokeLater(new Runnable() {
-        public void run(){
+        @Override
+		public void run(){
 		    frame = new JFrame("All In One Ping Validator");
 		    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
@@ -54,18 +67,50 @@ private static void createAndShowGUI(GuiPane guiPane) {
 	});
 }
 private static void addComboBox(GuiPane _guiPane){
-    JComboBox testCaseCombo = new JComboBox(testCases);
+    testCaseCombo = new JComboBox(testCases);
     _guiPane.add(testCaseCombo);	
+    
+    //comboModel = new DefaultComboBoxModel( testCases );
+    //testCaseCombo.setModel(comboModel);
+    
+    //for(int i = 0; i < testCases.length && testCases[i] != null; i++){
+        //comboModel.addElement(testCases[i]);
+    //}
+    
     testCaseCombo.setSelectedIndex(0);
+    
     // Set up the event listener for comboBox
     testCaseCombo.addActionListener(new ActionListener(){
         public void actionPerformed(ActionEvent e){
+        	System.out.println("getActionCommand: " + e.getActionCommand());
+        	System.out.println("getActionCommand: " + e.paramString());
+        	
+        	String[] tmpArr;
+        	String str;
+        	
         	JComboBox cb = (JComboBox)e.getSource();
-            comboSelected = (String)cb.getSelectedItem();
+        	//str = (String)cb.getSelectedItem();
+        	//tmpArr = str.split("\\(");
+        	//comboSelected = tmpArr[0];
+        	//System.out.println("tmpArr[0]: " + str);
+            //comboSelected = ((String) cb.getSelectedItem()).split(" \\(")[0];
+            comboSelected = stripBaselineComment((String) cb.getSelectedItem());
             //updateLabel(petName);
             System.out.println("chosenTestCase: " + comboSelected);
         }
     });  
+}
+private static String stripBaselineComment(String _str){
+	if(_str != null && _str.indexOf("(") != -1){
+		return(_str.split(" \\(")[0]);
+	}
+	return(_str);
+}
+private static void resetComboBox(){
+	testCaseCombo.removeAllItems();
+	for(int i = 0; i < testCases.length && testCases[i] != null; i++){
+		testCaseCombo.addItem(testCases[i]);
+    }
 }
 private static void addBtnBaseline(GuiPane _guiPane){
     btnSetBaseline = new JButton("Set as Baseline");
@@ -76,13 +121,27 @@ private static void addBtnBaseline(GuiPane _guiPane){
     // Set up the event listener for baseline button
     btnSetBaseline.addActionListener(new ActionListener(){
         public void actionPerformed(ActionEvent e){
+        	String _tmpStr;
+        	
         	testCaseToMakeValid = comboSelected;
         	System.out.println("testCaseToMakeValid: " + testCaseToMakeValid);
         	// If adding a baseline file, just change the filename of the currentRunPings.txt file to the current testCase name
         	Path source = Paths.get("currentRunPings.txt");
         	try {
-				Files.move(source, source.resolveSibling("base_" + comboSelected + ".txt"), StandardCopyOption.REPLACE_EXISTING);
-			} catch (IOException e1) {
+        		Files.move(source, source.resolveSibling("base_" + comboSelected + ".txt"), StandardCopyOption.REPLACE_EXISTING);
+				
+        		for(int i = 0; i < testCases.length && testCases[i] != null; i++){
+					System.out.println("testCaseId: " + testCases[i]);
+					_tmpStr = stripBaselineComment(testCases[i]);
+					if(_tmpStr.equals(testCaseToMakeValid)){
+						testCases[i] = _tmpStr + " (Has baseline)";
+						System.out.println("FOUND ----------testCases[i]: " + testCases[i]);
+						resetComboBox();
+						//testCaseCombo.setModel(comboModel); // reset comboBox
+					}
+				}
+
+        	} catch (IOException e1) {
 				e1.printStackTrace();
 			}
         }
@@ -97,7 +156,9 @@ private static void addBtnRunTest(GuiPane _guiPane){
     // Set up the event listener for baseline button
     btnRunTest.addActionListener(new ActionListener(){
         public void actionPerformed(ActionEvent e){
-        	testCaseToRun = comboSelected;
+        	//testCaseToRun = comboSelected.split(" \\(")[0];
+        	testCaseToRun = stripBaselineComment(comboSelected);
+        	//((String) cb.getSelectedItem()).split(" \\(")[0];
         	System.out.println("testCaseToRun: " + testCaseToRun);
         	Browsy.doTest(testCaseToRun);
         }

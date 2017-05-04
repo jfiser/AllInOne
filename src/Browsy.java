@@ -61,11 +61,13 @@ static Boolean gotPlayerVersion = false;
 static Boolean firstPing = true;
 static String[][] curSessionPingArr;
 static boolean hasId3 = false;
-static TestCase currentTestCase = null;
+static TestCase curTestCase = null;
 
 static WebDriver driver;
 static BrowserMobProxy bmpProxy;
 static ArrayList<TestCase> testCaseArr;
+static ArrayList<Steps> curStepsList = null;
+static int curStepsListIndx = 0;
 
 //static Array<Steps> stepsList = new Array<Steps>();
 
@@ -211,57 +213,70 @@ public static void main(String[] args) {
 	}
  }
  public static void doTest(String _testCaseToRun){
-	 ArrayList<Steps> stepsList = null;
+	 //ArrayList<Steps> stepsList = null;
 	 startBrowser();
 	 
 	 WebElement btnToClick = null;
 	 for(int i = 0; i < testCaseArr.size(); i++){
-		 if(testCaseArr.get(i).testCaseId == _testCaseToRun){
-			 stepsList = testCaseArr.get(i).stepsList;
-			 currentTestCase = testCaseArr.get(i);
+		 System.out.println("testCaseId: " + testCaseArr.get(i).testCaseId);
+		 if(testCaseArr.get(i).testCaseId.equals(_testCaseToRun)){
+			 curStepsList = testCaseArr.get(i).stepsList;
+			 //curStepsList = stepsList;
+			 curTestCase = testCaseArr.get(i);
 		 }
 	 }
-	 if(stepsList == null){
+	 if(curStepsList == null){
 		 System.out.println("Cannot find testCase: " + _testCaseToRun);
 		 return;
 	 }
-	 
-	 for (int i = 0; i < stepsList.size(); i++) {
-		 System.out.println(stepsList.get(i));
+		 
+	 for (int curStepsListIndx = 0; curStepsListIndx < curStepsList.size(); curStepsListIndx++) {
+		 System.out.println(curStepsList.get(curStepsListIndx));
+		 // if endTest - run next testcase
+		 if(curStepsList.get(curStepsListIndx).urlToTest == "endTestCase"){
+			 killBrowser();
+			 return;
+		 }
+		 else // end of all test cases - so kill browser sessions
+		 if(curStepsList.get(curStepsListIndx).urlToTest == "killBrowser"){
+			 killBrowser();
+			 return;
+		 }
+			 
 		 // go to the URL to test unless the URL param is set to "sameUrl"
-		 if(stepsList.get(i).urlToTest != "sameUrl" && stepsList.get(i).urlToTest != curUrlBeingTested){
-			 driver.get(stepsList.get(i).urlToTest);
+		 if(curStepsList.get(curStepsListIndx).urlToTest != "sameUrl" && curStepsList.get(curStepsListIndx).urlToTest != curUrlBeingTested){
+			 driver.get(curStepsList.get(curStepsListIndx).urlToTest);
 		 }
 		 // Can use class, id, or xpath as selector
-		 if(stepsList.get(i).accessorType == "className"){
+		 if(curStepsList.get(curStepsListIndx).accessorType == "className"){
 			 btnToClick = (new WebDriverWait(driver, 20))
-		    		  .until(ExpectedConditions.elementToBeClickable(By.className(stepsList.get(i).accessorName)));
+		    		  .until(ExpectedConditions.elementToBeClickable(By.className(curStepsList.get(curStepsListIndx).accessorName)));
 			 
 		 }
 		 else
-		 if(stepsList.get(i).accessorType == "id"){
+		 if(curStepsList.get(curStepsListIndx).accessorType == "id"){
 			 btnToClick = (new WebDriverWait(driver, 20))
-		    		  .until(ExpectedConditions.elementToBeClickable(By.id(stepsList.get(i).accessorName)));
+		    		  .until(ExpectedConditions.elementToBeClickable(By.id(curStepsList.get(curStepsListIndx).accessorName)));
 			 
 		 }
 		 else
-		 if(stepsList.get(i).accessorType == "xpath"){
+		 if(curStepsList.get(curStepsListIndx).accessorType == "xpath"){
 			 btnToClick = (new WebDriverWait(driver, 20))
-		    		  .until(ExpectedConditions.elementToBeClickable(By.xpath(stepsList.get(i).accessorName)));
+		    		  .until(ExpectedConditions.elementToBeClickable(By.xpath(curStepsList.get(curStepsListIndx).accessorName)));
 			 
 		 }
 		 // Haven't yet added rightClick stuff - haven't needed it yet			 
 		 btnToClick.click();
 		// Now thread sleep for however long specified while testing occurs 
-		 setTimeout(() -> killBrowser(), stepsList.get(i).duration * 1000);
-	    /*try {
-			Thread.sleep(stepsList.get(i).duration * 1000);
+		//setTimeout(() -> checkForNextStep(), curStepsList.get(curStepsListIndx).duration * 1000);
+	    try {
+			Thread.sleep(curStepsList.get(curStepsListIndx).duration * 1000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
-		} */ 			
-	} 
+		}	
+	 } 
  }
- public static void setTimeout(Runnable runnable, int delay){
+/* public static void setTimeout(Runnable runnable, int delay){
     new Thread(() -> {
         try {
             Thread.sleep(delay);
@@ -271,7 +286,7 @@ public static void main(String[] args) {
             System.err.println(e);
         }
     }).start();
-}
+}*/
  public static void killBrowser(){
 	    bmpProxy.stop();
 	    driver.quit();
