@@ -68,6 +68,7 @@ static BrowserMobProxy bmpProxy;
 static ArrayList<TestCase> testCaseArr;
 static ArrayList<Steps> curStepsList = null;
 static int curStepsListIndx = 0;
+static ArrayList<String> curTestCasePingArr = new ArrayList<String>();
 
 //static Array<Steps> stepsList = new Array<Steps>();
 
@@ -115,6 +116,13 @@ public static void main(String[] args) {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+	        	// save PINGS only in array so I can write to a baseline file if requested (not config, ggcmb.js, etc)
+	        	if(urlStr.indexOf("imrworldwide.com/cgi-bin/") != -1 && urlStr.indexOf("imrworldwide.com/cgi-bin/cfg?") == -1){
+					System.out.println("adding ping>>>>>>>: " + urlStr);
+
+	        		curTestCasePingArr.add(urlStr);
+	        		System.out.println("Browsy - curTestCasePingArr: " + curTestCasePingArr.get(0));
+	        	}
 	        	
 	        	// grab the config file to record the params
 	        	if(urlStr.indexOf("cgi-bin/cfg") != -1){
@@ -132,7 +140,7 @@ public static void main(String[] args) {
 	        	//basicTests.handlePing(urlStr);
         	}
 			
-     		if(!gotPlayerVersion && urlStr.indexOf("metrics.brightcove.com") != -1){
+     		/*if(!gotPlayerVersion && urlStr.indexOf("metrics.brightcove.com") != -1){
     			gotPlayerVersion = true;
      			playerVersion = thirdPartyPlayer.getPlayerVersion(urlStr);
      			
@@ -143,7 +151,7 @@ public static void main(String[] args) {
 				} catch (IOException e) {
 					e.printStackTrace();
 				} 
-    		}
+    		}*/
         	
             return null;
          }

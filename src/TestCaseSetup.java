@@ -45,17 +45,17 @@ public static ArrayList<TestCase> createTestCaseArr() {
 	// TestCase 2
 	ArrayList<Steps> stepsList2 = new ArrayList<Steps>();
 	//stepsList2.add(new Steps("http://engtestsite.com/joel/autoTest/autoTestPage.html", 
-	stepsList2.add(new Steps("https://earthviewer360.com/", 
-								"xpath", 
-								"//*[@id='playlistHolder']/div[1]",
-								//"vjs-big-play-button",  //*[@id="vjs_video_3"]/button
-								22,
+	stepsList2.add(new Steps("http://players.brightcove.net/1660646664/HydB02Dyb_default/index.html?playlistId=5047277540001", 
+								"className",
+								//"//*[@id='wrapper']/nav/div[2]/ul/li[2]/a",
+								"vjs-big-play-button",  //*[@id="vjs_video_3"]/button
+								35,
 								"leftClick"));
 	stepsList2.add(new Steps("killBrowser", 
-			"", 
-			"",  //*[@id="vjs_video_3"]/button
-			0,
-			""));
+								"", 
+								"",  //*[@id="vjs_video_3"]/button
+								0,
+								""));
 	
 	// Now add to the array of testCases
 	testCaseArr.add(new TestCase("jfTestCase2", 
