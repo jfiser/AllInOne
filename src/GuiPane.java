@@ -70,13 +70,6 @@ private static void addComboBox(GuiPane _guiPane){
     testCaseCombo = new JComboBox(testCases);
     _guiPane.add(testCaseCombo);	
     
-    //comboModel = new DefaultComboBoxModel( testCases );
-    //testCaseCombo.setModel(comboModel);
-    
-    //for(int i = 0; i < testCases.length && testCases[i] != null; i++){
-        //comboModel.addElement(testCases[i]);
-    //}
-    
     testCaseCombo.setSelectedIndex(0);
     
     // Set up the event listener for comboBox
@@ -89,13 +82,7 @@ private static void addComboBox(GuiPane _guiPane){
         	String str;
         	
         	JComboBox cb = (JComboBox)e.getSource();
-        	//str = (String)cb.getSelectedItem();
-        	//tmpArr = str.split("\\(");
-        	//comboSelected = tmpArr[0];
-        	//System.out.println("tmpArr[0]: " + str);
-            //comboSelected = ((String) cb.getSelectedItem()).split(" \\(")[0];
             comboSelected = stripBaselineComment((String) cb.getSelectedItem());
-            //updateLabel(petName);
             System.out.println("chosenTestCase: " + comboSelected);
         }
     });  
