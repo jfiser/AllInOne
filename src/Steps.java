@@ -1,6 +1,6 @@
 
 public class Steps {
-	public String urlToTest;
+	public String urlToTest; // values: a valid URL, "endTestCase", "killBrowser", "sameUrl" (don't navigate away)
 	public String accessorType;
 	public String accessorName;
 	public Integer duration;

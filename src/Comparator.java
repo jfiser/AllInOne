@@ -44,7 +44,7 @@ public static String[][] compare(){
 	GuiPane.addTextToPane("==================================================================\n\n");
 	
 	// Clear these arrays out each time
-	String valsToCheck = Browsy.currentTestCase.valsToCheck;
+	String valsToCheck = Browsy.curTestCase.valsToCheck;
 	System.out.println("valsToCheck: " + valsToCheck);
 
 	
@@ -66,7 +66,7 @@ public static String[][] compare(){
 				baseVal = "NONE";
 			}
 			
-			if(curPingValuesArr[i][j] != null){
+			if(curPingValuesArr != null && curPingValuesArr[i] != null && curPingValuesArr[i][j] != null){
 				curVal = curPingValuesArr[i][j];
 			}
 			else{
@@ -93,14 +93,17 @@ private static void getPingType(String[] _pingValuesArr){
 		
 		if(_pingValuesArr[i].equals("at=start")){
 			GuiPane.addTextToPane("_______________________\nComparing 'I' ping...\n_______________________\n");	
+			break;
 		}
 		else
 		if(_pingValuesArr[i].equals("at=view")){
 			GuiPane.addTextToPane("_______________________\nComparing 'V' ping...\n_______________________\n");	
+			break;
 		}
 		else
 		if(_pingValuesArr[i].equals("at=timer")){
 			GuiPane.addTextToPane("_______________________\nComparing 'D' ping...\n_______________________\n");	
+			break;
 		}
 	}
 }
