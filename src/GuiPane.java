@@ -2,7 +2,9 @@
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -11,10 +13,12 @@ import java.util.ArrayList;
 
 import javax.swing.*;
 
+import org.apache.commons.io.FileUtils;
+
 public class GuiPane extends JPanel {
 	
 static String comboSelected = "";
-static String testCaseToMakeValid = "";
+static String testCaseToMakeBaseline = "";
 static String testCaseToRun = "";
 static String[] testCases = new String[50]; // = { "BC_TestPlayer", "testCase2", "testCase3", "testCase4", "testCase5" };
 static JButton btnSetBaseline;
@@ -110,30 +114,47 @@ private static void addBtnBaseline(GuiPane _guiPane){
         public void actionPerformed(ActionEvent e){
         	String _tmpStr;
         	
-        	testCaseToMakeValid = comboSelected;
-        	System.out.println("testCaseToMakeValid: " + testCaseToMakeValid);
-        	// If adding a baseline file, just change the filename of the currentRunPings.txt file to the current testCase name
-        	Path source = Paths.get("currentRunPings.txt");
-        	try {
-        		Files.move(source, source.resolveSibling("base_" + comboSelected + ".txt"), StandardCopyOption.REPLACE_EXISTING);
-				
-        		for(int i = 0; i < testCases.length && testCases[i] != null; i++){
-					System.out.println("testCaseId: " + testCases[i]);
-					_tmpStr = stripBaselineComment(testCases[i]);
-					if(_tmpStr.equals(testCaseToMakeValid)){
-						testCases[i] = _tmpStr + " (Has baseline)";
-						System.out.println("FOUND ----------testCases[i]: " + testCases[i]);
-						resetComboBox();
-						//testCaseCombo.setModel(comboModel); // reset comboBox
-					}
+        	testCaseToMakeBaseline = comboSelected;
+        	System.out.println("testCaseToMakeBaseline: " + testCaseToMakeBaseline);
+        	//Files.move(source, source.resolveSibling("base_" + comboSelected + ".txt"), StandardCopyOption.REPLACE_EXISTING);
+			saveCurPingsToBaselineFile();
+			// reset ComboBox to show that this testCase now has a baseline
+			for(int i = 0; i < testCases.length && testCases[i] != null; i++){
+				System.out.println("testCaseId: " + testCases[i]);
+				_tmpStr = stripBaselineComment(testCases[i]);
+				if(_tmpStr.equals(testCaseToMakeBaseline)){
+					testCases[i] = _tmpStr + " (Has baseline)";
+					resetComboBox();
+					//testCaseCombo.setModel(comboModel); // reset comboBox
 				}
-
-        	} catch (IOException e1) {
-				e1.printStackTrace();
 			}
         }
-    });
-	
+    });	
+}
+private static void saveCurPingsToBaselineFile(){
+	String _fileToCreate = "base_" + comboSelected + ".txt";
+	File _curTestCasePingFile = new File(_fileToCreate); 
+	System.out.println("Save to baseline: " + Browsy.curTestCasePingArr.get(0));
+	for (int i = 0; i < Browsy.curTestCasePingArr.size(); i++) {
+		System.out.println("Save to baseline: " + Browsy.curTestCasePingArr.get(i));
+		try {
+    		FileUtils.writeStringToFile(_curTestCasePingFile, Browsy.curTestCasePingArr.get(i) + System.getProperty("line.separator"), 
+    																			Charset.defaultCharset(), true); //Charset.defaultCharset());
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	// add the baseline name to the testCase
+	if(Browsy.curTestCasePingArr.size() > 0){
+		for(int i = 0; i < Browsy.testCaseArr.size(); i++){
+			if(Browsy.testCaseArr.get(i).testCaseId.equals(comboSelected)){
+				Browsy.testCaseArr.get(i).baseFileName = _fileToCreate;
+				break;
+			}
+		}
+	}
+	//_fileToCreate
 }
 private static void addBtnRunTest(GuiPane _guiPane){
     JButton btnRunTest = new JButton("Run Test");
@@ -147,6 +168,7 @@ private static void addBtnRunTest(GuiPane _guiPane){
         	testCaseToRun = stripBaselineComment(comboSelected);
         	//((String) cb.getSelectedItem()).split(" \\(")[0];
         	System.out.println("testCaseToRun: " + testCaseToRun);
+        	Browsy.curTestCasePingArr.clear();
         	Browsy.doTest(testCaseToRun);
         }
     });
