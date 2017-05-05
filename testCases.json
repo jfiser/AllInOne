@@ -1,0 +1,50 @@
+[
+	{
+		"testCaseId":"jfTestCase1",
+		"stepsList":
+		[
+			{
+				"urlToTest":"http://players.brightcove.net/1660646664/HydB02Dyb_default/index.html?playlistId=5047277540001",
+				"accessorType":"className",
+				"accessorName":"vjs-big-play-button", 
+				"duration":15,
+				"clickType":"leftClick"
+			},
+				{
+				"urlToTest":"endTestCase",
+				"accessorType":"",
+				"accessorName":"", 
+				"duration":0,
+				"clickType":""
+			}
+		],
+		"prodsToCheck":"dcr",
+		"valsToCheck":"c27,c51,c52,cr",  // Check these values for the report
+		"baseFileName":""
+	},
+	// Start of testCase 2
+	{
+		"testCaseId":"jfTestCase2",
+		"stepsList":
+		[
+			{
+				"urlToTest":"http://players.brightcove.net/1660646664/HydB02Dyb_default/index.html?playlistId=5047277540001",
+				"accessorType":"className",
+				"accessorName":"vjs-big-play-button", 
+				"duration":25,
+				"clickType":"leftClick"
+			},
+				{
+				"urlToTest":"killBrowser",
+				"accessorType":"",
+				"accessorName":"", 
+				"duration":0,
+				"clickType":""
+			}
+		],
+		"prodsToCheck":"dcr",
+		"valsToCheck":"c27,c51,c52,cr",
+		"baseFileName":""
+	}
+
+]

@@ -170,6 +170,7 @@ private static void addBtnRunTest(GuiPane _guiPane){
         	System.out.println("testCaseToRun: " + testCaseToRun);
         	Browsy.curTestCasePingArr.clear();
         	Browsy.doTest(testCaseToRun);
+            disableBtnSetBaseline();
         }
     });
 }
