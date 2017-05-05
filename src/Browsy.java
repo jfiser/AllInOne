@@ -118,8 +118,6 @@ public static void main(String[] args) {
 				}
 	        	// save PINGS only in array so I can write to a baseline file if requested (not config, ggcmb.js, etc)
 	        	if(urlStr.indexOf("imrworldwide.com/cgi-bin/") != -1 && urlStr.indexOf("imrworldwide.com/cgi-bin/cfg?") == -1){
-					System.out.println("adding ping>>>>>>>: " + urlStr);
-
 	        		curTestCasePingArr.add(urlStr);
 	        		System.out.println("Browsy - curTestCasePingArr: " + curTestCasePingArr.get(0));
 	        	}
@@ -300,7 +298,7 @@ public static void main(String[] args) {
     driver.quit();
     guiPane.enableBtnSetBaseline();
     curSessionPingArr = Comparator.compare();
- }
+}
 	 
  
 }

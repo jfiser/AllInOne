@@ -15,8 +15,9 @@ public Comparator() {
 	
 }
 private static Boolean getCompareFiles(){
+	//if(!getBaseFileCreateArray("base_" + GuiPane.comboSelected + ".txt", "base")){
     // If a baseline doesn't exist for this testCase, don't try to compare
-	if(!getPingFileCreateArray("base_" + GuiPane.comboSelected + ".txt", "base")){
+	if(Browsy.curTestCase.baseFileName.equals("") || Browsy.curTestCase.baseFileName.equals(null)){
 		GuiPane.addTextToPane("\n==================================================================\n");
 		GuiPane.addTextToPane("No baseline file has been set for " + GuiPane.comboSelected + "\n");
 		GuiPane.addTextToPane("Click the \"Set as Baseline\" button to set the current pings as baseline"  + "\n");
@@ -24,16 +25,20 @@ private static Boolean getCompareFiles(){
 		System.out.println("in getCompareFiles2");
 		return(false);
     }
-    // Get the current file (the one I just ran) for comparison
-    getPingFileCreateArray("currentRunPings.txt", "cur");
+	else{
+		getBaseFileCreateArray(Browsy.curTestCase.baseFileName);
+		
+	}
+    // Get the current pings
+	getCurPingsCreateArray();
     return(true);
 }
 public static String[][] compare(){
 	String baseVal = "", curVal = "";
 	String[] baseValArr;
 	// If there's no baseline file - nothing to do here
-	basePingValuesArr = new String[50][];
-	curPingValuesArr = new String[50][];
+	basePingValuesArr = new String[500][]; // 500 pings should be enough
+	curPingValuesArr = new String[500][];
 
 	if(!getCompareFiles()){
 		return(null);
@@ -48,7 +53,7 @@ public static String[][] compare(){
 	System.out.println("valsToCheck: " + valsToCheck);
 
 	
-	for(int i = 0; i < basePingValuesArr.length && basePingValuesArr[i] != null; i++){
+	for(int i = 0; i < basePingValuesArr.length && !basePingValuesArr[i].equals(null); i++){
 		getPingType(basePingValuesArr[i]);
 		for(int j = 0; j < basePingValuesArr[i].length; j++){
 			if(basePingValuesArr[i][j] != null){
@@ -110,7 +115,36 @@ private static void getPingType(String[] _pingValuesArr){
 private static void checkNumberOfPings(){
 	
 }
-public static Boolean getPingFileCreateArray(String _fileName, String _baseOrCur) {
+private static Boolean getCurPingsCreateArray(){
+	//List<String> lines = new ArrayList<String>();
+	List<String> lines = new ArrayList<String>();
+	String tmpArr1[]; // just get the query string
+	String tmpArr2[];
+	String pingStr;
+	Integer j = 0;
+	String[][] arrayToUse;
+	
+	//System.out.println("handlePing>: " + urlStr);
+	lines = Browsy.curTestCasePingArr;
+	for (int i = 0; i < lines.size(); i++) {
+		pingStr = lines.get(i);
+		System.out.println("curPings ===" + lines.get(i));
+		// Only look at pings with cgi-bin in the URL - but we don't want the cfg
+		if(pingStr.indexOf('?') != -1 && pingStr.indexOf("cgi-bin") != -1 && pingStr.indexOf("cgi-bin/cfg") == -1){
+			tmpArr1 = pingStr.split("\\?");
+			System.out.println("tmpArr1: " + tmpArr1[1]);
+			tmpArr2 = tmpArr1[1].split("\\&");
+			
+			System.out.println("tmpArr2: " + tmpArr2);
+			//basePingValuesArr[basePingValuesArr.length] = tmpArr2;
+			curPingValuesArr[j++] = tmpArr2;
+		}			
+	}
+	System.out.println("getBaseFileCreateArray - return");
+	return(true);
+	
+}
+private static Boolean getBaseFileCreateArray(String _fileName) {
 	File file = new File(_fileName);
 	if(!file.exists()) { 
 	    return(false);
@@ -123,13 +157,6 @@ public static Boolean getPingFileCreateArray(String _fileName, String _baseOrCur
 	Integer j = 0;
 	String[][] arrayToUse;
 	
-	if(_baseOrCur.equals("base")){
-		arrayToUse = basePingValuesArr;
-	}
-	else{ // "cur"
-		arrayToUse = curPingValuesArr;
-	}
-
 	try {
 		lines = FileUtils.readLines(file, "UTF-8");
 	} catch (IOException e) {
@@ -147,10 +174,10 @@ public static Boolean getPingFileCreateArray(String _fileName, String _baseOrCur
 			
 			System.out.println("tmpArr2: " + tmpArr2);
 			//basePingValuesArr[basePingValuesArr.length] = tmpArr2;
-			arrayToUse[j++] = tmpArr2;
+			basePingValuesArr[j++] = tmpArr2;
 		}			
 	}
-	System.out.println("getPingFileCreateArray - return");
+	System.out.println("getBaseFileCreateArray - return");
 	return(true);
 }
 

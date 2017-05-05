@@ -34,7 +34,7 @@ public GuiPane(ArrayList<TestCase> _testCaseArr) {
 	//testCaseArr = _testCaseArr;
 	for (int i = 0; i < _testCaseArr.size(); i++) {
 		testCases[i] = _testCaseArr.get(i).testCaseId;
-		if(_testCaseArr.get(i).baseFileName != null){
+		if(!_testCaseArr.get(i).baseFileName.equals(null) && !_testCaseArr.get(i).baseFileName.equals("")){
 			testCases[i] = testCases[i] + " (Has baseline)";
 		}
 		else{
@@ -42,8 +42,6 @@ public GuiPane(ArrayList<TestCase> _testCaseArr) {
 		}
 		System.out.println("testCaseArr>>: " + _testCaseArr.get(i).testCaseId);
 	}
-    //comboSelected = testCases[0];
-    //comboSelected = testCases[0].split(" \\(")[0];
     comboSelected = stripBaselineComment(testCases[0]);
 
     createAndShowGUI(this);
@@ -139,7 +137,7 @@ private static void saveCurPingsToBaselineFile(){
 		System.out.println("Save to baseline: " + Browsy.curTestCasePingArr.get(i));
 		try {
     		FileUtils.writeStringToFile(_curTestCasePingFile, Browsy.curTestCasePingArr.get(i) + System.getProperty("line.separator"), 
-    																			Charset.defaultCharset(), true); //Charset.defaultCharset());
+    								Charset.defaultCharset(), (i == 0 ? false : true)); //Charset.defaultCharset());
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -150,6 +148,7 @@ private static void saveCurPingsToBaselineFile(){
 		for(int i = 0; i < Browsy.testCaseArr.size(); i++){
 			if(Browsy.testCaseArr.get(i).testCaseId.equals(comboSelected)){
 				Browsy.testCaseArr.get(i).baseFileName = _fileToCreate;
+				TestCaseSetup.saveTestCaseArr();
 				break;
 			}
 		}
@@ -169,16 +168,18 @@ private static void addBtnRunTest(GuiPane _guiPane){
         	//((String) cb.getSelectedItem()).split(" \\(")[0];
         	System.out.println("testCaseToRun: " + testCaseToRun);
         	Browsy.curTestCasePingArr.clear();
-        	Browsy.doTest(testCaseToRun);
             disableBtnSetBaseline();
+        	Browsy.doTest(testCaseToRun);
         }
     });
 }
 
 public static void disableBtnSetBaseline(){
+	System.out.println(">>>>>>>>>>>>>>>>>>>>disableBtnSetBaseline ");
 	btnSetBaseline.setEnabled(false); 
 }
 public void enableBtnSetBaseline(){
+	System.out.println(">>>>>>>>>>>>>>>>>>>>enableBtnSetBaseline ");
 	btnSetBaseline.setEnabled(true); 
 }
 public static void addPingTextHolder(GuiPane _guiPane){
