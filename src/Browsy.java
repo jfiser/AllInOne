@@ -241,34 +241,34 @@ public static void main(String[] args) {
 	 for (int curStepsListIndx = 0; curStepsListIndx < curStepsList.size(); curStepsListIndx++) {
 		 System.out.println(curStepsList.get(curStepsListIndx));
 		 // if endTest - run next testcase
-		 if(curStepsList.get(curStepsListIndx).urlToTest == "endTestCase"){
+		 if(curStepsList.get(curStepsListIndx).urlToTest.equals("endTestCase")){
 			 killBrowser();
 			 return;
 		 }
 		 else // end of all test cases - so kill browser sessions
-		 if(curStepsList.get(curStepsListIndx).urlToTest == "killBrowser"){
+		 if(curStepsList.get(curStepsListIndx).urlToTest.equals("killBrowser")){
 			 killBrowser();
 			 return;
 		 }
 			 
 		 // go to the URL to test unless the URL param is set to "sameUrl"
-		 if(curStepsList.get(curStepsListIndx).urlToTest != "sameUrl" && curStepsList.get(curStepsListIndx).urlToTest != curUrlBeingTested){
+		 if(!curStepsList.get(curStepsListIndx).urlToTest.equals("sameUrl") && !curStepsList.get(curStepsListIndx).urlToTest.equals(curUrlBeingTested)){
 			 driver.get(curStepsList.get(curStepsListIndx).urlToTest);
 		 }
 		 // Can use class, id, or xpath as selector
-		 if(curStepsList.get(curStepsListIndx).accessorType == "className"){
+		 if(curStepsList.get(curStepsListIndx).accessorType.equals("className")){
 			 btnToClick = (new WebDriverWait(driver, 20))
 		    		  .until(ExpectedConditions.elementToBeClickable(By.className(curStepsList.get(curStepsListIndx).accessorName)));
 			 
 		 }
 		 else
-		 if(curStepsList.get(curStepsListIndx).accessorType == "id"){
+		 if(curStepsList.get(curStepsListIndx).accessorType.equals("id")){
 			 btnToClick = (new WebDriverWait(driver, 20))
 		    		  .until(ExpectedConditions.elementToBeClickable(By.id(curStepsList.get(curStepsListIndx).accessorName)));
 			 
 		 }
 		 else
-		 if(curStepsList.get(curStepsListIndx).accessorType == "xpath"){
+		 if(curStepsList.get(curStepsListIndx).accessorType.equals("xpath")){
 			 btnToClick = (new WebDriverWait(driver, 20))
 		    		  .until(ExpectedConditions.elementToBeClickable(By.xpath(curStepsList.get(curStepsListIndx).accessorName)));
 			 
@@ -296,11 +296,11 @@ public static void main(String[] args) {
     }).start();
 }*/
  public static void killBrowser(){
-	    bmpProxy.stop();
-	    driver.quit();
-	    guiPane.enableBtnSetBaseline();
-	    curSessionPingArr = Comparator.compare();
-	 }
+    bmpProxy.stop();
+    driver.quit();
+    guiPane.enableBtnSetBaseline();
+    curSessionPingArr = Comparator.compare();
+ }
 	 
  
 }

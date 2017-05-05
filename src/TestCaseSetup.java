@@ -1,11 +1,37 @@
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
+
 
 public class TestCaseSetup {
 
 
-
 public static ArrayList<TestCase> createTestCaseArr() {
+	//ArrayList<TestCase> testCaseArr = new ArrayList<TestCase>();
+	Type typeOfT = new TypeToken<ArrayList<TestCase>>(){}.getType();
+	
+	Gson gson = new Gson();
+	JsonReader reader = null;
+	try {
+		reader = new JsonReader(new FileReader("./testCases.json"));
+	} catch (FileNotFoundException e) {
+		e.printStackTrace();
+	}
+	ArrayList<TestCase> testCaseArr = gson.fromJson(reader, typeOfT); // contains the whole reviews list
+	for(int i = 0; i < testCaseArr.size(); i++){
+		System.out.println("JSON: <" + testCaseArr.get(i).stepsList.get(i).accessorType + ">");
+	}
+	return testCaseArr;
+}
+public static ArrayList<TestCase> createTestCaseArr2() {
 	ArrayList<TestCase> testCaseArr = new ArrayList<TestCase>();
 	
 	// TestCase 1
