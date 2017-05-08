@@ -53,7 +53,7 @@ public static String[][] compare(){
 	System.out.println("valsToCheck: " + valsToCheck);
 
 	
-	for(int i = 0; i < basePingValuesArr.length && !basePingValuesArr[i].equals(null); i++){
+	for(int i = 0; i < basePingValuesArr.length && basePingValuesArr[i] != null; i++){
 		getPingType(basePingValuesArr[i]);
 		for(int j = 0; j < basePingValuesArr[i].length; j++){
 			if(basePingValuesArr[i][j] != null){
