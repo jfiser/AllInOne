@@ -21,6 +21,7 @@ public static ArrayList<TestCase> createTestCaseArr() {
 	Type typeOfT = new TypeToken<ArrayList<TestCase>>(){}.getType();
 	
 	Gson gson = new Gson();
+	//Gson gson = new GsonBuilder().setPrettyPrinting().create();
 	JsonReader reader = null;
 	try {
 		reader = new JsonReader(new FileReader("./testCases.json"));
@@ -36,7 +37,8 @@ public static ArrayList<TestCase> createTestCaseArr() {
 }
 public static void saveTestCaseArr(){
 	try (Writer writer = new FileWriter("./testCases.json")) {
-	    Gson gson = new GsonBuilder().create();
+	    //Gson gson = new GsonBuilder().create();
+	    Gson gson = new GsonBuilder().setPrettyPrinting().create();
 	    gson.toJson(Browsy.testCaseArr, writer); // need to save to Browsy.testCaseArr - the official testCaseArr
 	} catch (IOException e) {
 		e.printStackTrace();
