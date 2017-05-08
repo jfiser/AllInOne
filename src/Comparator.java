@@ -34,8 +34,11 @@ private static Boolean getCompareFiles(){
     return(true);
 }
 public static String[][] compare(){
-	String baseVal = "", curVal = "";
+	String baseVal = "", curVal = "", pingType = "";
 	String[] baseValArr;
+	ArrayList<String> baseSelectedValsArr = new ArrayList<String>();
+	ArrayList<String> curSelectedValsArr = new ArrayList<String>();
+	
 	// If there's no baseline file - nothing to do here
 	basePingValuesArr = new String[500][]; // 500 pings should be enough
 	curPingValuesArr = new String[500][];
@@ -54,7 +57,11 @@ public static String[][] compare(){
 
 	
 	for(int i = 0; i < basePingValuesArr.length && basePingValuesArr[i] != null; i++){
-		getPingType(basePingValuesArr[i]);
+		baseSelectedValsArr = new ArrayList<String>(); // init these arrays each time
+		curSelectedValsArr = new ArrayList<String>();
+		
+		pingType = getPingType(basePingValuesArr[i]);
+		
 		for(int j = 0; j < basePingValuesArr[i].length; j++){
 			if(basePingValuesArr[i][j] != null){
 				baseVal = basePingValuesArr[i][j];
@@ -84,33 +91,38 @@ public static String[][] compare(){
 			else{
 				GuiPane.addTextToPane("SAME - " + baseVal + "\n");					
 			}
+			
+			baseSelectedValsArr.add(baseVal);
+			curSelectedValsArr.add(curVal);
 			System.out.println("[" + baseVal + "]" 
 							+ " : "
 							+ "[" + curVal + "]" 
 							+ (baseVal.equals(curVal) ? "" : ">>>>>>DIFF"));
 		}
+		Report.addLine(Browsy.curTestCase, pingType, baseSelectedValsArr, curSelectedValsArr);
 	}
 	return(curPingValuesArr);
 }
-private static void getPingType(String[] _pingValuesArr){
+private static String getPingType(String[] _pingValuesArr){
 	for(int i = 0; i < _pingValuesArr.length; i++){
 		System.out.println("getType: " + _pingValuesArr[i]);
 		
 		if(_pingValuesArr[i].equals("at=start")){
-			GuiPane.addTextToPane("_______________________\nComparing 'I' ping...\n_______________________\n");	
-			break;
+			GuiPane.addTextToPane("_______________________\nComparing 'I' ping...\n_______________________\n");
+			return("I");
 		}
 		else
 		if(_pingValuesArr[i].equals("at=view")){
 			GuiPane.addTextToPane("_______________________\nComparing 'V' ping...\n_______________________\n");	
-			break;
+			return("V");
 		}
 		else
 		if(_pingValuesArr[i].equals("at=timer")){
 			GuiPane.addTextToPane("_______________________\nComparing 'D' ping...\n_______________________\n");	
-			break;
+			return("D");
 		}
 	}
+	return null;
 }
 private static void checkNumberOfPings(){
 	
