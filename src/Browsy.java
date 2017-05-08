@@ -80,6 +80,7 @@ public static void main(String[] args) {
 	//TestCaseSetup testCaseSetup = new TestCaseSetup();
 	testCaseArr = TestCaseSetup.createTestCaseArr();
 	guiPane = new GuiPane(testCaseArr);
+	Report.getTemplate("http://engtestsite.com/joel/autoTest/report0.html");
 
 	//System.setProperty("webdriver.chrome.driver", "/ChromeDriver/chromedriver.exe");
 	System.setProperty("webdriver.chrome.driver", "chromedriver");
