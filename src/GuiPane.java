@@ -32,13 +32,14 @@ static DefaultComboBoxModel comboModel;
 public GuiPane(ArrayList<TestCase> _testCaseArr) {
     //super(new BorderLayout());
 	//testCaseArr = _testCaseArr;
-	for (int i = 0; i < _testCaseArr.size(); i++) {
-		testCases[i] = _testCaseArr.get(i).testCaseId;
+	testCases[0] = "batch";
+	for (int i = 0, j = 1; i < _testCaseArr.size(); i++, j++) {
+		testCases[j] = _testCaseArr.get(i).testCaseId;
 		if(!_testCaseArr.get(i).baseFileName.equals(null) && !_testCaseArr.get(i).baseFileName.equals("")){
-			testCases[i] = testCases[i] + " (Has baseline)";
+			testCases[j] = testCases[j] + " (Has baseline)";
 		}
 		else{
-			testCases[i] = testCases[i] + " (No baseline)";
+			testCases[j] = testCases[j] + " (No baseline)";
 		}
 		System.out.println("testCaseArr>>: " + _testCaseArr.get(i).testCaseId);
 	}
@@ -176,7 +177,7 @@ private static void addBtnRunTest(GuiPane _guiPane){
 		        	System.out.println("testCaseToRun: " + testCaseToRun);
 		        	Browsy.curTestCasePingArr.clear();
 		            disableBtnSetBaseline();
-		        	Browsy.doTest("batch");
+		        	Browsy.doTest(testCaseToRun);
                 
         	});
         }     	

@@ -56,6 +56,7 @@ public static String[][] compare(){
 	String valsToCheck = Browsy.curTestCase.valsToCheck;
 	//System.out.println("valsToCheck: " + valsToCheck);
 
+	Boolean pingDiff_testCase = false;
 	
 	for(int i = 0; i < basePingValuesArr.length && basePingValuesArr[i] != null; i++){
 		baseSelectedValsArr = new ArrayList<String>(); // init these arrays each time
@@ -96,6 +97,7 @@ public static String[][] compare(){
 			if(!baseVal.equals(curVal)){
 				GuiPane.addTextToPane("DIFF - Baseline: " + baseVal + " ; " + "Current: " + curVal + "\n");
 				pingDiff = true;
+				pingDiff_testCase = true;
 			}
 			else{
 				GuiPane.addTextToPane("SAME - " + baseVal + "\n");					
@@ -108,7 +110,9 @@ public static String[][] compare(){
 							+ "[" + curVal + "]" 
 							+ (baseVal.equals(curVal) ? "" : ">>>>>>DIFF"));
 		}
-		Report.addLine(Browsy.curTestCase, pingType, baseSelectedValsArr, curSelectedValsArr, pingDiff);
+		System.out.println("AddLine>>>>>>>>>>>: " + i + "; lastOne: " + (i == basePingValuesArr.length-1) + " ; length: " + basePingValuesArr.length);
+		Report.addLine(Browsy.curTestCase, pingType, baseSelectedValsArr, curSelectedValsArr, pingDiff, pingDiff_testCase, (basePingValuesArr[i+1] == null));
+		
 	}
 	return(curPingValuesArr);
 }
