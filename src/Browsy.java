@@ -113,7 +113,7 @@ public static void main(String[] args) {
 		        		FileUtils.writeStringToFile(requestPingFile, urlStr + System.getProperty("line.separator"), Charset.defaultCharset(), true); //Charset.defaultCharset());
 					}
 					System.out.println("handlePing>: " + urlStr);
-					guiPane.addTextToPane(urlStr + "\n");
+					guiPane.addTextToPane(urlStr + "\n\n");
 					//FileUtils.writeStringToFile(requestPingFile, str + '\n', Charset.defaultCharset());
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -221,73 +221,105 @@ public static void main(String[] args) {
 	}
  }
  public static void doTest(String _testCaseToRun){
-	 Thread t1 = new Thread(new Runnable() {
+	 Thread browserThread = new Thread(new Runnable() {
          public void run() {
-        	 startBrowser();
-			 
+        	 startBrowser();			 
 			 WebElement btnToClick = null;
 			 for(int i = 0; i < testCaseArr.size(); i++){
 				 System.out.println("testCaseId: " + testCaseArr.get(i).testCaseId);
-				 if(testCaseArr.get(i).testCaseId.equals(_testCaseToRun)){
+				 if(_testCaseToRun.equals("batch")){
 					 curStepsList = testCaseArr.get(i).stepsList;
 					 //curStepsList = stepsList;
 					 curTestCase = testCaseArr.get(i);
+					 
 				 }
-			 }
-			 if(curStepsList == null){
-				 System.out.println("Cannot find testCase: " + _testCaseToRun);
-				 return;
-			 }
+				 else{
+					 if(testCaseArr.get(i).testCaseId.equals(_testCaseToRun)){
+						 curStepsList = testCaseArr.get(i).stepsList;
+						 //curStepsList = stepsList;
+						 curTestCase = testCaseArr.get(i);
+					 }
+					 else{
+						 continue;
+					 }
+				 }
+				 //}
+				 if(curStepsList == null){
+					 System.out.println("Cannot find testCase: " + _testCaseToRun);
+					 return;
+				 }
 				 
-			 for (int curStepsListIndx = 0; curStepsListIndx < curStepsList.size(); curStepsListIndx++) {
-				 System.out.println(curStepsList.get(curStepsListIndx));
-				 // if endTest - run next testcase
-				 if(curStepsList.get(curStepsListIndx).urlToTest.equals("endTestCase")){
-					 killBrowser();
-					 return;
-				 }
-				 else // end of all test cases - so kill browser sessions
-				 if(curStepsList.get(curStepsListIndx).urlToTest.equals("killBrowser")){
-					 killBrowser();
-					 return;
-				 }
-					 
-				 // go to the URL to test unless the URL param is set to "sameUrl"
-				 if(!curStepsList.get(curStepsListIndx).urlToTest.equals("sameUrl") && !curStepsList.get(curStepsListIndx).urlToTest.equals(curUrlBeingTested)){
-					 driver.get(curStepsList.get(curStepsListIndx).urlToTest);
-				 }
-				 // Can use class, id, or xpath as selector
-				 if(curStepsList.get(curStepsListIndx).accessorType.equals("className")){
-					 btnToClick = (new WebDriverWait(driver, 20))
-				    		  .until(ExpectedConditions.elementToBeClickable(By.className(curStepsList.get(curStepsListIndx).accessorName)));
-					 
-				 }
-				 else
-				 if(curStepsList.get(curStepsListIndx).accessorType.equals("id")){
-					 btnToClick = (new WebDriverWait(driver, 20))
-				    		  .until(ExpectedConditions.elementToBeClickable(By.id(curStepsList.get(curStepsListIndx).accessorName)));
-					 
-				 }
-				 else
-				 if(curStepsList.get(curStepsListIndx).accessorType.equals("xpath")){
-					 btnToClick = (new WebDriverWait(driver, 20))
-				    		  .until(ExpectedConditions.elementToBeClickable(By.xpath(curStepsList.get(curStepsListIndx).accessorName)));
-					 System.out.println("AFTER XPath>>>>>>>>>>>>>>>>>>>>>>>>>");
-				 }
-				 // Haven't yet added rightClick stuff - haven't needed it yet			 
-				 btnToClick.click();
-				// Now thread sleep for however long specified while testing occurs 
-				//setTimeout(() -> checkForNextStep(), curStepsList.get(curStepsListIndx).duration * 1000);
-			    try {
-					Thread.sleep(curStepsList.get(curStepsListIndx).duration * 1000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}	
-			 } 
+				 // Execute the steps one by one
+				 for (int curStepsListIndx = 0; curStepsListIndx < curStepsList.size(); curStepsListIndx++) {
+					 System.out.println(curStepsList.get(curStepsListIndx));
+					 // if endTest - run next testcase
+					 if(curStepsList.get(curStepsListIndx).urlToTest.equals("endTestCase")){
+						 // Check to see if this is the last testCase in the batch
+						 if(!_testCaseToRun.equals("batch") || i == testCaseArr.size()-1){
+							 killBrowser();
+							 System.out.println("after killBrowser");
+							 return;
+						 }
+						 else{
+							 curSessionPingArr = Comparator.compare();
+							 System.out.println("after compare");
+							 continue;
+						 }
+					 }
+					 else // end of all test cases - so kill browser sessions
+					 if(curStepsList.get(curStepsListIndx).urlToTest.equals("killBrowser")){
+						 // Check to see if this is the last testCase in the batch
+						 if(!_testCaseToRun.equals("batch") || i == testCaseArr.size()-1){
+							 killBrowser();
+							 System.out.println("after killBrowser");
+							 return;
+						 }
+						 else{
+							 curSessionPingArr = Comparator.compare();
+							 System.out.println("after compare");
+							 continue;
+						 }
+					 }
+						 
+					 // go to the URL to test unless the URL param is set to "sameUrl"
+					 if(!curStepsList.get(curStepsListIndx).urlToTest.equals("sameUrl") && !curStepsList.get(curStepsListIndx).urlToTest.equals(curUrlBeingTested)){
+						 driver.get(curStepsList.get(curStepsListIndx).urlToTest);
+					 }
+					 // Can use class, id, or xpath as selector
+					 if(curStepsList.get(curStepsListIndx).accessorType.equals("className")){
+						 btnToClick = (new WebDriverWait(driver, 20))
+					    		  .until(ExpectedConditions.elementToBeClickable(By.className(curStepsList.get(curStepsListIndx).accessorName)));
+						 
+					 }
+					 else
+					 if(curStepsList.get(curStepsListIndx).accessorType.equals("id")){
+						 btnToClick = (new WebDriverWait(driver, 20))
+					    		  .until(ExpectedConditions.elementToBeClickable(By.id(curStepsList.get(curStepsListIndx).accessorName)));
+						 
+					 }
+					 else
+					 if(curStepsList.get(curStepsListIndx).accessorType.equals("xpath")){
+						 btnToClick = (new WebDriverWait(driver, 20))
+					    		  .until(ExpectedConditions.elementToBeClickable(By.xpath(curStepsList.get(curStepsListIndx).accessorName)));
+						 System.out.println("AFTER XPath>>>>>>>>>>>>>>>>>>>>>>>>>");
+					 }
+					 // Haven't yet added rightClick stuff - haven't needed it yet			 
+					 btnToClick.click();
+					// Now thread sleep for however long specified while testing occurs 
+					//setTimeout(() -> checkForNextStep(), curStepsList.get(curStepsListIndx).duration * 1000);
+				    try {
+						 System.out.println(">>>>>>>>>Sleeping for: " + curStepsList.get(curStepsListIndx).duration);
+	
+				    	Thread.sleep(curStepsList.get(curStepsListIndx).duration * 1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}	
+				 } 
 	 
+			 }
          }
     });  
-    t1.start();
+    browserThread.start();
 
  }
 /* public static void setTimeout(Runnable runnable, int delay){

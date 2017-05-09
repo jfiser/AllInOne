@@ -54,7 +54,7 @@ public static String[][] compare(){
 	
 	// Clear these arrays out each time
 	String valsToCheck = Browsy.curTestCase.valsToCheck;
-	System.out.println("valsToCheck: " + valsToCheck);
+	//System.out.println("valsToCheck: " + valsToCheck);
 
 	
 	for(int i = 0; i < basePingValuesArr.length && basePingValuesArr[i] != null; i++){
@@ -80,7 +80,7 @@ public static String[][] compare(){
 				baseVal = "NONE";
 			}
 			
-			System.out.println("curPingValuesArr[" + i + "]: " + curPingValuesArr[i]);
+			//System.out.println("curPingValuesArr[" + i + "]: " + curPingValuesArr[i]);
 			
 			if(curPingValuesArr != null 
 								&& i < curPingValuesArr.length 
@@ -114,7 +114,7 @@ public static String[][] compare(){
 }
 private static String getPingType(String[] _pingValuesArr){
 	for(int i = 0; i < _pingValuesArr.length; i++){
-		System.out.println("getType: " + _pingValuesArr[i]);
+		//System.out.println("getType: " + _pingValuesArr[i]);
 		
 		if(_pingValuesArr[i].equals("at=start")){
 			GuiPane.addTextToPane("_______________________\nComparing 'I' ping...\n_______________________\n");
@@ -153,15 +153,13 @@ private static Boolean getCurPingsCreateArray(){
 		// Only look at pings with cgi-bin in the URL - but we don't want the cfg
 		if(pingStr.indexOf('?') != -1 && pingStr.indexOf("cgi-bin") != -1 && pingStr.indexOf("cgi-bin/cfg") == -1){
 			tmpArr1 = pingStr.split("\\?");
-			System.out.println("tmpArr1: " + tmpArr1[1]);
 			tmpArr2 = tmpArr1[1].split("\\&");
 			
-			System.out.println("tmpArr2: " + tmpArr2);
+			//System.out.println("tmpArr2: " + tmpArr2);
 			//basePingValuesArr[basePingValuesArr.length] = tmpArr2;
 			curPingValuesArr[j++] = tmpArr2;
 		}			
 	}
-	System.out.println("getBaseFileCreateArray - return");
 	return(true);
 	
 }
@@ -186,14 +184,14 @@ private static Boolean getBaseFileCreateArray(String _fileName) {
 	//System.out.println("handlePing>: " + urlStr);
 	for (int i = 0; i < lines.size(); i++) {
 		pingStr = lines.get(i);
-		System.out.println("===" + lines.get(i));
+		//System.out.println("===" + lines.get(i));
 		// Only look at pings with cgi-bin in the URL - but we don't want the cfg
 		if(pingStr.indexOf('?') != -1 && pingStr.indexOf("cgi-bin") != -1 && pingStr.indexOf("cgi-bin/cfg") == -1){
 			tmpArr1 = pingStr.split("\\?");
-			System.out.println("tmpArr1: " + tmpArr1[1]);
+			//System.out.println("tmpArr1: " + tmpArr1[1]);
 			tmpArr2 = tmpArr1[1].split("\\&");
 			
-			System.out.println("tmpArr2: " + tmpArr2);
+			//System.out.println("tmpArr2: " + tmpArr2);
 			//basePingValuesArr[basePingValuesArr.length] = tmpArr2;
 			basePingValuesArr[j++] = tmpArr2;
 		}			
