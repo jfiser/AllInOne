@@ -52,7 +52,8 @@ public static void getTemplate(String _fileToGet){
 	
 }
 public static void addLine(TestCase _curTestCase, String _pingType, ArrayList<String> _baseSelectedValArr, 
-												ArrayList<String> _curSelectedValArr, Boolean _pingDiff){
+												ArrayList<String> _curSelectedValArr, Boolean _pingDiff, 
+												Boolean _pingDiff_testCase, Boolean _lastPing){
 	//curTestCaseNum;
 	//String tr = "#tr" + curTestCaseNum;
 	//String _baseValStr = _baseSelectedValArr.join(",");
@@ -60,14 +61,11 @@ public static void addLine(TestCase _curTestCase, String _pingType, ArrayList<St
 	String _curValStr = String.join("</br>", _curSelectedValArr);
 	String _testCaseIdToUse = null, _testCaseDescripToUse = null;
 	
-	/*Elements curRow = htmlTemplate.select("#tr" + curTestCaseNum++);
-	curRow.html("<td class='testCaseId'>" + _curTestCase.testCaseId + "</td>"
-				+ "<td class='pingType'>" + _pingType + "</td>"
-				+ "<td class='baseVals'>" + _baseValStr + "</td>"
-				+ "<td class='curVals'>" + _curValStr + "</td>"			
-			);*/
 	_testCaseIdToUse = _curTestCase.testCaseId.equals(curTestCaseId) ? "" : _curTestCase.testCaseId;
 	_testCaseDescripToUse = _curTestCase.testCaseId.equals(curTestCaseId) ? "" : _curTestCase.testCaseDescrip;
+	if(_testCaseIdToUse == "" && _lastPing){
+		_testCaseIdToUse = _curTestCase.testCaseId + " complete." + (_pingDiff_testCase ? "</br>Found Errors." : "</br>Found No Errors.");
+	}
 	curTestCaseId = _curTestCase.testCaseId;
 	
 	Element myTable = htmlTemplate.select("table").first();
