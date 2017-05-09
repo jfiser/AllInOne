@@ -10,7 +10,8 @@ import org.jsoup.select.Elements;
 
 public class Report {
 	
-private static int curTestCaseNum = 1;
+//private static int curTestCaseNum = 1;
+private static String curTestCaseId = null;
 static Document htmlTemplate = null;
 
 public Report() {
@@ -50,12 +51,14 @@ public static void getTemplate(String _fileToGet){
 	
 	
 }
-public static void addLine(TestCase _curTestCase, String _pingType, ArrayList<String> _baseSelectedValArr, ArrayList<String> _curSelectedValArr){
+public static void addLine(TestCase _curTestCase, String _pingType, ArrayList<String> _baseSelectedValArr, 
+												ArrayList<String> _curSelectedValArr, Boolean _pingDiff){
 	//curTestCaseNum;
 	//String tr = "#tr" + curTestCaseNum;
 	//String _baseValStr = _baseSelectedValArr.join(",");
 	String _baseValStr = String.join("</br>", _baseSelectedValArr);
 	String _curValStr = String.join("</br>", _curSelectedValArr);
+	String _testCaseIdToUse = null, _testCaseDescripToUse = null;
 	
 	/*Elements curRow = htmlTemplate.select("#tr" + curTestCaseNum++);
 	curRow.html("<td class='testCaseId'>" + _curTestCase.testCaseId + "</td>"
@@ -63,10 +66,13 @@ public static void addLine(TestCase _curTestCase, String _pingType, ArrayList<St
 				+ "<td class='baseVals'>" + _baseValStr + "</td>"
 				+ "<td class='curVals'>" + _curValStr + "</td>"			
 			);*/
+	_testCaseIdToUse = _curTestCase.testCaseId.equals(curTestCaseId) ? "" : _curTestCase.testCaseId;
+	_testCaseDescripToUse = _curTestCase.testCaseId.equals(curTestCaseId) ? "" : _curTestCase.testCaseDescrip;
+	curTestCaseId = _curTestCase.testCaseId;
 	
 	Element myTable = htmlTemplate.select("table").first();
-	myTable.append("<td class='testCaseId'>" + _curTestCase.testCaseId + "</br>" + _curTestCase.testCaseDescrip + "</td>"
-				+ "<td class='pingType'>" + _pingType + "</td>"
+	myTable.append("<td class='testCaseId'>" + _testCaseIdToUse + "</br>" + _testCaseDescripToUse + "</td>"
+				+ "<td class='pingType" + (_pingDiff ? ", diffColor" : "") + "'>" + _pingType + "</td>"
 				+ "<td class='baseVals'>" + _baseValStr + "</td>"
 				+ "<td class='curVals'>" + _curValStr + "</td>"			
 			);
