@@ -65,7 +65,7 @@ public static void addLine(TestCase _curTestCase, String _pingType, ArrayList<St
 			);*/
 	
 	Element myTable = htmlTemplate.select("table").first();
-	myTable.append("<td class='testCaseId'>" + _curTestCase.testCaseId + "</td>"
+	myTable.append("<td class='testCaseId'>" + _curTestCase.testCaseId + "</br>" + _curTestCase.testCaseDescrip + "</td>"
 				+ "<td class='pingType'>" + _pingType + "</td>"
 				+ "<td class='baseVals'>" + _baseValStr + "</td>"
 				+ "<td class='curVals'>" + _curValStr + "</td>"			

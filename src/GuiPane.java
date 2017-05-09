@@ -77,15 +77,20 @@ private static void addComboBox(GuiPane _guiPane){
     // Set up the event listener for comboBox
     testCaseCombo.addActionListener(new ActionListener(){
         public void actionPerformed(ActionEvent e){
-        	System.out.println("getActionCommand: " + e.getActionCommand());
-        	System.out.println("getActionCommand: " + e.paramString());
-        	
-        	String[] tmpArr;
-        	String str;
-        	
-        	JComboBox cb = (JComboBox)e.getSource();
-            comboSelected = stripBaselineComment((String) cb.getSelectedItem());
-            System.out.println("chosenTestCase: " + comboSelected);
+        	SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+		        	System.out.println("getActionCommand: " + e.getActionCommand());
+		        	System.out.println("getActionCommand: " + e.paramString());
+		        	
+		        	String[] tmpArr;
+		        	String str;
+		        	
+		        	JComboBox cb = (JComboBox)e.getSource();
+		            comboSelected = stripBaselineComment((String) cb.getSelectedItem());
+		            System.out.println("chosenTestCase: " + comboSelected);
+                }
+        	});
         }
     });  
 }
@@ -162,15 +167,19 @@ private static void addBtnRunTest(GuiPane _guiPane){
     //btnSetBaseline.addActionListener(new BtnListener(comboSelected));
     // Set up the event listener for baseline button
     btnRunTest.addActionListener(new ActionListener(){
+    	
         public void actionPerformed(ActionEvent e){
-        	//testCaseToRun = comboSelected.split(" \\(")[0];
-        	testCaseToRun = stripBaselineComment(comboSelected);
-        	//((String) cb.getSelectedItem()).split(" \\(")[0];
-        	System.out.println("testCaseToRun: " + testCaseToRun);
-        	Browsy.curTestCasePingArr.clear();
-            disableBtnSetBaseline();
-        	Browsy.doTest(testCaseToRun);
-        }
+        	EventQueue.invokeLater(() -> {
+		        	//testCaseToRun = comboSelected.split(" \\(")[0];
+		        	testCaseToRun = stripBaselineComment(comboSelected);
+		        	//((String) cb.getSelectedItem()).split(" \\(")[0];
+		        	System.out.println("testCaseToRun: " + testCaseToRun);
+		        	Browsy.curTestCasePingArr.clear();
+		            disableBtnSetBaseline();
+		        	Browsy.doTest(testCaseToRun);
+                
+        	});
+        }     	
     });
 }
 
