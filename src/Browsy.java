@@ -10,6 +10,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.text.Document;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
+import javax.xml.xpath.XPath;
 
 import java.io.File;
 import java.io.IOException;
@@ -80,7 +81,7 @@ public static void main(String[] args) {
 	//TestCaseSetup testCaseSetup = new TestCaseSetup();
 	testCaseArr = TestCaseSetup.createTestCaseArr();
 	guiPane = new GuiPane(testCaseArr);
-	Report.getTemplate("http://engtestsite.com/joel/autoTest/report0.html");
+	Report.getTemplate("http://engtestsite.com/joel/autoTest/reportTemplate.html");
 
 	//System.setProperty("webdriver.chrome.driver", "/ChromeDriver/chromedriver.exe");
 	System.setProperty("webdriver.chrome.driver", "chromedriver");
@@ -220,68 +221,74 @@ public static void main(String[] args) {
 	}
  }
  public static void doTest(String _testCaseToRun){
-	 //ArrayList<Steps> stepsList = null;
-	 startBrowser();
+	 Thread t1 = new Thread(new Runnable() {
+         public void run() {
+        	 startBrowser();
+			 
+			 WebElement btnToClick = null;
+			 for(int i = 0; i < testCaseArr.size(); i++){
+				 System.out.println("testCaseId: " + testCaseArr.get(i).testCaseId);
+				 if(testCaseArr.get(i).testCaseId.equals(_testCaseToRun)){
+					 curStepsList = testCaseArr.get(i).stepsList;
+					 //curStepsList = stepsList;
+					 curTestCase = testCaseArr.get(i);
+				 }
+			 }
+			 if(curStepsList == null){
+				 System.out.println("Cannot find testCase: " + _testCaseToRun);
+				 return;
+			 }
+				 
+			 for (int curStepsListIndx = 0; curStepsListIndx < curStepsList.size(); curStepsListIndx++) {
+				 System.out.println(curStepsList.get(curStepsListIndx));
+				 // if endTest - run next testcase
+				 if(curStepsList.get(curStepsListIndx).urlToTest.equals("endTestCase")){
+					 killBrowser();
+					 return;
+				 }
+				 else // end of all test cases - so kill browser sessions
+				 if(curStepsList.get(curStepsListIndx).urlToTest.equals("killBrowser")){
+					 killBrowser();
+					 return;
+				 }
+					 
+				 // go to the URL to test unless the URL param is set to "sameUrl"
+				 if(!curStepsList.get(curStepsListIndx).urlToTest.equals("sameUrl") && !curStepsList.get(curStepsListIndx).urlToTest.equals(curUrlBeingTested)){
+					 driver.get(curStepsList.get(curStepsListIndx).urlToTest);
+				 }
+				 // Can use class, id, or xpath as selector
+				 if(curStepsList.get(curStepsListIndx).accessorType.equals("className")){
+					 btnToClick = (new WebDriverWait(driver, 20))
+				    		  .until(ExpectedConditions.elementToBeClickable(By.className(curStepsList.get(curStepsListIndx).accessorName)));
+					 
+				 }
+				 else
+				 if(curStepsList.get(curStepsListIndx).accessorType.equals("id")){
+					 btnToClick = (new WebDriverWait(driver, 20))
+				    		  .until(ExpectedConditions.elementToBeClickable(By.id(curStepsList.get(curStepsListIndx).accessorName)));
+					 
+				 }
+				 else
+				 if(curStepsList.get(curStepsListIndx).accessorType.equals("xpath")){
+					 btnToClick = (new WebDriverWait(driver, 20))
+				    		  .until(ExpectedConditions.elementToBeClickable(By.xpath(curStepsList.get(curStepsListIndx).accessorName)));
+					 System.out.println("AFTER XPath>>>>>>>>>>>>>>>>>>>>>>>>>");
+				 }
+				 // Haven't yet added rightClick stuff - haven't needed it yet			 
+				 btnToClick.click();
+				// Now thread sleep for however long specified while testing occurs 
+				//setTimeout(() -> checkForNextStep(), curStepsList.get(curStepsListIndx).duration * 1000);
+			    try {
+					Thread.sleep(curStepsList.get(curStepsListIndx).duration * 1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}	
+			 } 
 	 
-	 WebElement btnToClick = null;
-	 for(int i = 0; i < testCaseArr.size(); i++){
-		 System.out.println("testCaseId: " + testCaseArr.get(i).testCaseId);
-		 if(testCaseArr.get(i).testCaseId.equals(_testCaseToRun)){
-			 curStepsList = testCaseArr.get(i).stepsList;
-			 //curStepsList = stepsList;
-			 curTestCase = testCaseArr.get(i);
-		 }
-	 }
-	 if(curStepsList == null){
-		 System.out.println("Cannot find testCase: " + _testCaseToRun);
-		 return;
-	 }
-		 
-	 for (int curStepsListIndx = 0; curStepsListIndx < curStepsList.size(); curStepsListIndx++) {
-		 System.out.println(curStepsList.get(curStepsListIndx));
-		 // if endTest - run next testcase
-		 if(curStepsList.get(curStepsListIndx).urlToTest.equals("endTestCase")){
-			 killBrowser();
-			 return;
-		 }
-		 else // end of all test cases - so kill browser sessions
-		 if(curStepsList.get(curStepsListIndx).urlToTest.equals("killBrowser")){
-			 killBrowser();
-			 return;
-		 }
-			 
-		 // go to the URL to test unless the URL param is set to "sameUrl"
-		 if(!curStepsList.get(curStepsListIndx).urlToTest.equals("sameUrl") && !curStepsList.get(curStepsListIndx).urlToTest.equals(curUrlBeingTested)){
-			 driver.get(curStepsList.get(curStepsListIndx).urlToTest);
-		 }
-		 // Can use class, id, or xpath as selector
-		 if(curStepsList.get(curStepsListIndx).accessorType.equals("className")){
-			 btnToClick = (new WebDriverWait(driver, 20))
-		    		  .until(ExpectedConditions.elementToBeClickable(By.className(curStepsList.get(curStepsListIndx).accessorName)));
-			 
-		 }
-		 else
-		 if(curStepsList.get(curStepsListIndx).accessorType.equals("id")){
-			 btnToClick = (new WebDriverWait(driver, 20))
-		    		  .until(ExpectedConditions.elementToBeClickable(By.id(curStepsList.get(curStepsListIndx).accessorName)));
-			 
-		 }
-		 else
-		 if(curStepsList.get(curStepsListIndx).accessorType.equals("xpath")){
-			 btnToClick = (new WebDriverWait(driver, 20))
-		    		  .until(ExpectedConditions.elementToBeClickable(By.xpath(curStepsList.get(curStepsListIndx).accessorName)));
-			 
-		 }
-		 // Haven't yet added rightClick stuff - haven't needed it yet			 
-		 btnToClick.click();
-		// Now thread sleep for however long specified while testing occurs 
-		//setTimeout(() -> checkForNextStep(), curStepsList.get(curStepsListIndx).duration * 1000);
-	    try {
-			Thread.sleep(curStepsList.get(curStepsListIndx).duration * 1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}	
-	 } 
+         }
+    });  
+    t1.start();
+
  }
 /* public static void setTimeout(Runnable runnable, int delay){
     new Thread(() -> {

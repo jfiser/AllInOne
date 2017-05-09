@@ -38,6 +38,7 @@ public static String[][] compare(){
 	String[] baseValArr;
 	ArrayList<String> baseSelectedValsArr = new ArrayList<String>();
 	ArrayList<String> curSelectedValsArr = new ArrayList<String>();
+	Boolean pingDiff = false;
 	
 	// If there's no baseline file - nothing to do here
 	basePingValuesArr = new String[500][]; // 500 pings should be enough
@@ -61,6 +62,7 @@ public static String[][] compare(){
 		curSelectedValsArr = new ArrayList<String>();
 		
 		pingType = getPingType(basePingValuesArr[i]);
+		pingDiff = false;
 		
 		for(int j = 0; j < basePingValuesArr[i].length; j++){
 			if(basePingValuesArr[i][j] != null){
@@ -78,7 +80,13 @@ public static String[][] compare(){
 				baseVal = "NONE";
 			}
 			
-			if(curPingValuesArr != null && curPingValuesArr[i] != null && curPingValuesArr[i][j] != null){
+			System.out.println("curPingValuesArr[" + i + "]: " + curPingValuesArr[i]);
+			
+			if(curPingValuesArr != null 
+								&& i < curPingValuesArr.length 
+								&& curPingValuesArr[i] != null 
+								&& j < curPingValuesArr[i].length 
+								&& curPingValuesArr[i][j] != null){
 				curVal = curPingValuesArr[i][j];
 			}
 			else{
@@ -87,6 +95,7 @@ public static String[][] compare(){
 			
 			if(!baseVal.equals(curVal)){
 				GuiPane.addTextToPane("DIFF - Baseline: " + baseVal + " ; " + "Current: " + curVal + "\n");
+				pingDiff = true;
 			}
 			else{
 				GuiPane.addTextToPane("SAME - " + baseVal + "\n");					
@@ -99,7 +108,7 @@ public static String[][] compare(){
 							+ "[" + curVal + "]" 
 							+ (baseVal.equals(curVal) ? "" : ">>>>>>DIFF"));
 		}
-		Report.addLine(Browsy.curTestCase, pingType, baseSelectedValsArr, curSelectedValsArr);
+		Report.addLine(Browsy.curTestCase, pingType, baseSelectedValsArr, curSelectedValsArr, pingDiff);
 	}
 	return(curPingValuesArr);
 }

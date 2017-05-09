@@ -10,6 +10,14 @@
         "duration": 15,
         "clickType": "leftClick"
       },
+	  {
+        "urlToTest": "https://earthviewer360.com/",
+        "accessorType": "xpath",
+        "accessorName": "//*[@id='playlistHolder']/div[1]",
+        "duration": 20,
+        "clickType": "leftClick"
+      },
+
       {
         "urlToTest": "endTestCase",
         "accessorType": "",
