@@ -61,6 +61,7 @@ private static void createAndShowGUI(GuiPane guiPane) {
 		    addComboBox(guiPane);
 		    addBtnBaseline(guiPane);
 		    addPingTextHolder(guiPane);
+		    addInstructions();
 		    //testCaseCombo.setPrototypeDisplayValue("text here");
 		    frame.setSize(1050, 700);
 		    //frame.setMinimumSize(new Dimension(600, 600));
@@ -68,6 +69,22 @@ private static void createAndShowGUI(GuiPane guiPane) {
 		    frame.setVisible(true);
         }
 	});
+}
+private static void addInstructions(){
+	addTextToPane("\n====================\n"
+			+ "HOW TO USE\n"
+			+ "====================\n"
+			+ "\n- Select a testcase from the dropdown menu or select \"batch\" to run all testcases.\n"
+			+ "- Beside each testcase there's a flag that tells you if the testcase already has a baseline (Has baseline)\n"
+			+ "- To create a baseline for a testcase, choose the testcase, then click \"Run Test\"\n"
+			+ "- After the testcase has completed, the \"Set as Baseline\" button will become enabled (it starts grayed out)\n"
+			+ "- Click the \"Set as Baseline\" button. Now the testcase has a baseline. It should now show (Has baseline)\n"
+			+ "- Once a testcase has a baseline, you can validate the pings for the testcase by clicking \"Run Test\"\n"
+			+ "- After a testcase with a baseline set completes, a report is produced comparing the baseline with the current test.\n"
+			+ "\n=========================================================================================\n\n"
+			);
+	
+	
 }
 private static void addComboBox(GuiPane _guiPane){
     testCaseCombo = new JComboBox(testCases);
@@ -185,11 +202,9 @@ private static void addBtnRunTest(GuiPane _guiPane){
 }
 
 public static void disableBtnSetBaseline(){
-	System.out.println(">>>>>>>>>>>>>>>>>>>>disableBtnSetBaseline ");
 	btnSetBaseline.setEnabled(false); 
 }
 public void enableBtnSetBaseline(){
-	System.out.println(">>>>>>>>>>>>>>>>>>>>enableBtnSetBaseline ");
 	btnSetBaseline.setEnabled(true); 
 }
 public static void addPingTextHolder(GuiPane _guiPane){

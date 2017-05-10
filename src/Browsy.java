@@ -70,6 +70,7 @@ static ArrayList<TestCase> testCaseArr;
 static ArrayList<Steps> curStepsList = null;
 static int curStepsListIndx = 0;
 static ArrayList<String> curTestCasePingArr = new ArrayList<String>();
+static Boolean batchRun = false;
 
 //static Array<Steps> stepsList = new Array<Steps>();
 
@@ -228,12 +229,13 @@ public static void main(String[] args) {
 			 for(int i = 0; i < testCaseArr.size(); i++){
 				 System.out.println("testCaseId: " + testCaseArr.get(i).testCaseId);
 				 if(_testCaseToRun.equals("batch")){
+					 batchRun = true;
 					 curStepsList = testCaseArr.get(i).stepsList;
-					 //curStepsList = stepsList;
 					 curTestCase = testCaseArr.get(i);
 					 
 				 }
 				 else{
+					 batchRun = false;
 					 if(testCaseArr.get(i).testCaseId.equals(_testCaseToRun)){
 						 curStepsList = testCaseArr.get(i).stepsList;
 						 //curStepsList = stepsList;
@@ -336,7 +338,10 @@ public static void main(String[] args) {
  public static void killBrowser(){
     bmpProxy.stop();
     driver.quit();
-    guiPane.enableBtnSetBaseline();
+    System.out.println("curTestCase.testCaseId: " + curTestCase.testCaseId);
+    if(!batchRun){
+        guiPane.enableBtnSetBaseline();
+    }
     curSessionPingArr = Comparator.compare();
 }
 	 
