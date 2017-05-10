@@ -61,19 +61,45 @@ public static void addLine(TestCase _curTestCase, String _pingType, ArrayList<St
 	String _curValStr = String.join("</br>", _curSelectedValArr);
 	String _testCaseIdToUse = null, _testCaseDescripToUse = null;
 	
+	// Don't fill in the testCaseId / tesdtCaseDescrip cell for each ping for each specific testcase - just show blanks in those cells
 	_testCaseIdToUse = _curTestCase.testCaseId.equals(curTestCaseId) ? "" : _curTestCase.testCaseId;
 	_testCaseDescripToUse = _curTestCase.testCaseId.equals(curTestCaseId) ? "" : _curTestCase.testCaseDescrip;
-	if(_testCaseIdToUse == "" && _lastPing){
+    
+	System.out.println("_lastPing: " + _lastPing);
+	System.out.println("_testCaseIdToUse.equals(): " + _testCaseIdToUse.equals(""));
+	
+	if(_testCaseIdToUse.equals("") && _lastPing){
 		_testCaseIdToUse = _curTestCase.testCaseId + " complete." + (_pingDiff_testCase ? "</br>Found Errors." : "</br>Found No Errors.");
 	}
 	curTestCaseId = _curTestCase.testCaseId;
 	
 	Element myTable = htmlTemplate.select("table").first();
-	myTable.append("<td class='testCaseId" + (_pingDiff_testCase ? ", blackBack, whiteText" : "") + "'>" + _testCaseIdToUse + "</br>" + _testCaseDescripToUse + "</td>"
+	//myTable.append("<td class='testCaseId" + (_lastPing ? " blackBack whiteText" : "") + "'>" + _testCaseIdToUse + "</br>" + _testCaseDescripToUse + "</td>"
+	myTable.append("<tr>"
+				+ "<td class='testCaseId" + "'>" + _testCaseIdToUse + "</br>" + _testCaseDescripToUse + "</td>"
 				+ "<td class='pingType" + (_pingDiff ? ", diffColor" : "") + "'>" + _pingType + "</td>"
 				+ "<td class='baseVals'>" + _baseValStr + "</td>"
-				+ "<td class='curVals'>" + _curValStr + "</td>"			
-			);
+				+ "<td class='curVals'>" + _curValStr + "</td>"	
+				+ "</tr>"
+				);
+	
+	if(_lastPing){
+		myTable.append("<tr>"
+				+ "<td colspan='4' class='blackBack'>" + "</td>"  );
+				//+ "<td class='blackBack'>" + "</td>"
+				//+ "<td class='blackBack'>" + "</td>"
+				//+ "<td class='blackBack'>" + "</td>"
+				//+ "</tr>"
+				//);
+		
+		/*myTable.append("<tr>"
+				+ "<td colspan='4'><hr/></td>"
+				+ "</tr>"
+				);*/
+		//<tr>
+        	//<td colspan="3"><hr/></td>
+        //</tr>
+	}
 	
 	
 	try {

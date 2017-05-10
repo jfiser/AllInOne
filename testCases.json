@@ -10,13 +10,13 @@
         "duration": 15,
         "clickType": "leftClick"
       },
-      {
-        "urlToTest": "https://earthviewer360.com/",
-        "accessorType": "xpath",
-        "accessorName": "//*[@id\u003d\u0027playlistHolder\u0027]/div[1]",
-        "duration": 10,
-        "clickType": "leftClick"
-      },
+      //{
+        //"urlToTest": "https://earthviewer360.com/",
+        //"accessorType": "xpath",
+        //"accessorName": "//*[@id\u003d\u0027playlistHolder\u0027]/div[1]",
+        //"duration": 10,
+        //"clickType": "leftClick"
+      //},
       {
         "urlToTest": "endTestCase",
         "accessorType": "",

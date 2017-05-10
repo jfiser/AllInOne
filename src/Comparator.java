@@ -102,7 +102,7 @@ public static String[][] compare(){
 			else{
 				GuiPane.addTextToPane("SAME - " + baseVal + "\n");					
 			}
-			
+			// These contain values like cr=4_00_99_V1_00000,  c51=adl,0, c52=noad,0,  etc
 			baseSelectedValsArr.add(baseVal);
 			curSelectedValsArr.add(curVal);
 			System.out.println("[" + baseVal + "]" 
@@ -110,7 +110,8 @@ public static String[][] compare(){
 							+ "[" + curVal + "]" 
 							+ (baseVal.equals(curVal) ? "" : ">>>>>>DIFF"));
 		}
-		System.out.println("AddLine>>>>>>>>>>>: " + i + "; lastOne: " + (i == basePingValuesArr.length-1) + " ; length: " + basePingValuesArr.length);
+		System.out.println("AddLine>>>>>>>>>>>: " + i + "; lastOne: " + (basePingValuesArr[i+1] == null) + " ; length: " + basePingValuesArr.length);
+		System.out.println("basePingValuesArr[i+1]: " + basePingValuesArr[i+1]);
 		Report.addLine(Browsy.curTestCase, pingType, baseSelectedValsArr, curSelectedValsArr, pingDiff, pingDiff_testCase, (basePingValuesArr[i+1] == null));
 		
 	}
