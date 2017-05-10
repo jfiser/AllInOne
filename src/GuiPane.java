@@ -222,30 +222,9 @@ public static void addPingTextHolder(GuiPane _guiPane){
   });
 }
 
-/*public static void addPingTextHolder(GuiPane _guiPane){
-	pingTextHolder = new JTextField(108);
-    //textField.setBounds(5, 5, 280, 50); // to get height, set large font
-	pingTextHolder.setFont(pingTextHolder.getFont().deriveFont(50f));
-    _guiPane.add(pingTextHolder);
-}*/
 public static void addTextToPane(String str){
 	  GuiPane.pingTextArea.append(str);
 }
-
-/*public void addTextToPane(String str){
-	pingTextArea.setFont(new Font("SansSerif", Font.PLAIN, 16));
-	pingTextArea.setForeground(new Color(0x444444));
-	pingTextArea.setSize(400,400);    
-
-	pingTextArea.setLineWrap(true);
-	pingTextArea.setEditable(true);
-	pingTextArea.setVisible(true);
-	      	      	  
-	JScrollPane scrollPane = new JScrollPane(pingTextArea);
-	
-	GuiPane.pingTextArea.append(str);
-}*/
-
 }
 
 

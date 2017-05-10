@@ -69,7 +69,7 @@ public static void addLine(TestCase _curTestCase, String _pingType, ArrayList<St
 	curTestCaseId = _curTestCase.testCaseId;
 	
 	Element myTable = htmlTemplate.select("table").first();
-	myTable.append("<td class='testCaseId'>" + _testCaseIdToUse + "</br>" + _testCaseDescripToUse + "</td>"
+	myTable.append("<td class='testCaseId" + (_pingDiff_testCase ? ", blackBack, whiteText" : "") + "'>" + _testCaseIdToUse + "</br>" + _testCaseDescripToUse + "</td>"
 				+ "<td class='pingType" + (_pingDiff ? ", diffColor" : "") + "'>" + _pingType + "</td>"
 				+ "<td class='baseVals'>" + _baseValStr + "</td>"
 				+ "<td class='curVals'>" + _curValStr + "</td>"			
