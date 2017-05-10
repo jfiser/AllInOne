@@ -68,9 +68,9 @@ public static void addLine(TestCase _curTestCase, String _pingType, ArrayList<St
 	System.out.println("_lastPing: " + _lastPing);
 	System.out.println("_testCaseIdToUse.equals(): " + _testCaseIdToUse.equals(""));
 	
-	if(_testCaseIdToUse.equals("") && _lastPing){
-		_testCaseIdToUse = _curTestCase.testCaseId + " complete." + (_pingDiff_testCase ? "</br>Found Errors." : "</br>Found No Errors.");
-	}
+	//if(_testCaseIdToUse.equals("") && _lastPing){
+		//_testCaseIdToUse = _curTestCase.testCaseId + " complete." + (_pingDiff_testCase ? "</br>Found Errors." : "</br>Found No Errors.");
+	//}
 	curTestCaseId = _curTestCase.testCaseId;
 	
 	Element myTable = htmlTemplate.select("table").first();
