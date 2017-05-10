@@ -336,13 +336,21 @@ public static void main(String[] args) {
     }).start();
 }*/
  public static void killBrowser(){
-    bmpProxy.stop();
-    driver.quit();
-    System.out.println("curTestCase.testCaseId: " + curTestCase.testCaseId);
-    if(!batchRun){
-        guiPane.enableBtnSetBaseline();
-    }
-    curSessionPingArr = Comparator.compare();
+ 	driver.navigate().refresh();
+ 	/*try {
+		Thread.sleep(3000);
+	} catch (InterruptedException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}*/
+ 	bmpProxy.stop();
+ 	driver.quit();
+ 	
+	System.out.println("curTestCase.testCaseId: " + curTestCase.testCaseId);
+	if(!batchRun){
+	    guiPane.enableBtnSetBaseline();
+	}
+	curSessionPingArr = Comparator.compare();
 }
 	 
  

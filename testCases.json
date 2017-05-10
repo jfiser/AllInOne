@@ -4,10 +4,10 @@
     "testCaseDescrip": "BC playlist run for 5 minutes, then kill browser.",
     "stepsList": [
       {
-        "urlToTest": "http://players.brightcove.net/1660646664/HydB02Dyb_default/index.html?playlistId\u003d5047277540001",
+        "urlToTest": "http://players.brightcove.net/1660646664/HydB02Dyb_default/index.html?playlistId=5047277540001",
         "accessorType": "className",
         "accessorName": "vjs-big-play-button",
-        "duration": 15,
+        "duration": 32,
         "clickType": "leftClick"
       },
       //{
