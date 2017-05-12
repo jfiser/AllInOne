@@ -336,7 +336,7 @@ public static void main(String[] args) {
     }).start();
 }*/
  public static void killBrowser(){
- 	driver.navigate().refresh();
+ 	driver.navigate().refresh(); // refresh the browser so we get the final pings
  	/*try {
 		Thread.sleep(3000);
 	} catch (InterruptedException e) {
