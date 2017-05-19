@@ -1,0 +1,55 @@
+[
+  {
+    "testCaseId": "jfTestCase1",
+    "testCaseDescrip": "BC playlist run for 5 minutes, then kill browser.",
+    "stepsList": [
+      {
+        "urlToTest": "http://players.brightcove.net/1660646664/HydB02Dyb_default/index.html?playlistId=5047277540001",
+        "accessorType": "className",
+        "accessorName": "vjs-big-play-button",
+        "duration": 32,
+        "clickType": "leftClick"
+      },
+      //{
+        //"urlToTest": "https://earthviewer360.com/",
+        //"accessorType": "xpath",
+        //"accessorName": "//*[@id\u003d\u0027playlistHolder\u0027]/div[1]",
+        //"duration": 10,
+        //"clickType": "leftClick"
+      //},
+      {
+        "urlToTest": "endTestCase",
+        "accessorType": "",
+        "accessorName": "",
+        "duration": 0,
+        "clickType": ""
+      }
+    ],
+    "prodsToCheck": "dcr",
+    "valsToCheck": "c27,c51,c52,cr",
+    "baseFileName": "base_jfTestCase1.txt"
+  },
+  {
+    "testCaseId": "jfTestCase2",
+    "testCaseDescrip": "",
+    "stepsList": [
+      {
+        "urlToTest": "http://players.brightcove.net/1660646664/HydB02Dyb_default/index.html?playlistId\u003d5047277540001",
+        "accessorType": "className",
+        "accessorName": "vjs-big-play-button",
+        "duration": 25,
+        "clickType": "leftClick"
+      },
+      {
+        "urlToTest": "killBrowser",
+        "accessorType": "",
+        "accessorName": "",
+        "duration": 0,
+        "clickType": ""
+      }
+    ],
+    "prodsToCheck": "dcr",
+    "valsToCheck": "c27,c51,c52,cr",
+    "baseFileName": "base_jfTestCase2.txt"
+  }
+]
