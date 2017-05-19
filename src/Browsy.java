@@ -1,32 +1,19 @@
 
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import javax.swing.JEditorPane;
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
-import javax.swing.text.Document;
-import javax.swing.text.html.HTMLEditorKit;
-import javax.swing.text.html.StyleSheet;
-import javax.xml.xpath.XPath;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 
-import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 //import gui.JScrollPaneDemo;
@@ -37,14 +24,11 @@ import net.lightbody.bmp.BrowserMobProxyServer;
 import net.lightbody.bmp.client.ClientUtil;
 import net.lightbody.bmp.core.har.Har;
 import net.lightbody.bmp.filters.RequestFilter;
-import net.lightbody.bmp.filters.ResponseFilter;
 import net.lightbody.bmp.proxy.CaptureType;
 import net.lightbody.bmp.util.HttpMessageContents;
 import net.lightbody.bmp.util.HttpMessageInfo;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 
 
 public class Browsy {
@@ -222,91 +206,113 @@ public static void main(String[] args) {
 	}
  }
  public static void doTest(String _testCaseToRun){
-	 Thread browserThread = new Thread(new Runnable() {
-         public void run() {
-        	 startBrowser();			 
-			 WebElement btnToClick = null;
-			 for(int i = 0; i < testCaseArr.size(); i++){
-				 System.out.println("testCaseId: " + testCaseArr.get(i).testCaseId);
-				 if(_testCaseToRun.equals("batch")){
-					 batchRun = true;
-					 curStepsList = testCaseArr.get(i).stepsList;
-					 curTestCase = testCaseArr.get(i);
+	Thread browserThread = new Thread(new Runnable() {
+        public void run() {
+        	startBrowser();			 
+			WebElement btnToClick = null;
+			for(int i = 0; i < testCaseArr.size(); i++){
+				System.out.println("testCaseId: " + testCaseArr.get(i).testCaseId);
+				if(_testCaseToRun.equals("batch")){
+					batchRun = true;
+					curStepsList = testCaseArr.get(i).stepsList;
+					curTestCase = testCaseArr.get(i);
 					 
-				 }
-				 else{
-					 batchRun = false;
-					 if(testCaseArr.get(i).testCaseId.equals(_testCaseToRun)){
-						 curStepsList = testCaseArr.get(i).stepsList;
-						 //curStepsList = stepsList;
-						 curTestCase = testCaseArr.get(i);
-					 }
-					 else{
-						 continue;
-					 }
-				 }
-				 //}
-				 if(curStepsList == null){
-					 System.out.println("Cannot find testCase: " + _testCaseToRun);
-					 return;
-				 }
+				}
+				else{
+					batchRun = false;
+					if(testCaseArr.get(i).testCaseId.equals(_testCaseToRun)){
+						curStepsList = testCaseArr.get(i).stepsList;
+						//curStepsList = stepsList;
+						curTestCase = testCaseArr.get(i);
+					}
+					else{
+						continue;
+					}
+				}
+				//}
+				if(curStepsList == null){
+					System.out.println("Cannot find testCase: " + _testCaseToRun);
+					return;
+				}
 				 
-				 // Execute the steps one by one
-				 for (int curStepsListIndx = 0; curStepsListIndx < curStepsList.size(); curStepsListIndx++) {
-					 System.out.println(curStepsList.get(curStepsListIndx));
-					 // if endTest - run next testcase
-					 if(curStepsList.get(curStepsListIndx).urlToTest.equals("endTestCase")){
-						 // Check to see if this is the last testCase in the batch
-						 if(!_testCaseToRun.equals("batch") || i == testCaseArr.size()-1){
-							 killBrowser();
-							 System.out.println("after killBrowser");
-							 return;
-						 }
-						 else{
-							 curSessionPingArr = Comparator.compare();
-							 System.out.println("after compare");
-							 continue;
-						 }
-					 }
-					 else // end of all test cases - so kill browser sessions
-					 if(curStepsList.get(curStepsListIndx).urlToTest.equals("killBrowser")){
-						 // Check to see if this is the last testCase in the batch
-						 if(!_testCaseToRun.equals("batch") || i == testCaseArr.size()-1){
-							 killBrowser();
-							 System.out.println("after killBrowser");
-							 return;
-						 }
-						 else{
-							 curSessionPingArr = Comparator.compare();
-							 System.out.println("after compare");
-							 continue;
-						 }
-					 }
+				// Execute the steps one by one
+				for (int curStepsListIndx = 0; curStepsListIndx < curStepsList.size(); curStepsListIndx++) {
+					System.out.println(curStepsList.get(curStepsListIndx));
+					//btnToClick = null;
+					// if endTest - run next testcase
+					if(curStepsList.get(curStepsListIndx).urlToTest.equals("endTestCase")){
+						// Check to see if this is the last testCase in the batch
+						if(!_testCaseToRun.equals("batch") || i == testCaseArr.size()-1){
+							killBrowser();
+							System.out.println("after killBrowser");
+							return;
+						}
+						else{
+							curSessionPingArr = Comparator.compare();
+							System.out.println("after compare");
+							continue;
+						}
+					}
+					else // end of all test cases - so kill browser sessions
+					if(curStepsList.get(curStepsListIndx).urlToTest.equals("killBrowser")){
+						// Check to see if this is the last testCase in the batch
+						if(!_testCaseToRun.equals("batch") || i == testCaseArr.size()-1){
+							killBrowser();
+							System.out.println("after killBrowser");
+							return;
+						}
+						else{
+							curSessionPingArr = Comparator.compare();
+							System.out.println("after compare");
+							continue;
+						}
+					}
 						 
 					 // go to the URL to test unless the URL param is set to "sameUrl"
-					 if(!curStepsList.get(curStepsListIndx).urlToTest.equals("sameUrl") && !curStepsList.get(curStepsListIndx).urlToTest.equals(curUrlBeingTested)){
-						 driver.get(curStepsList.get(curStepsListIndx).urlToTest);
-					 }
-					 // Can use class, id, or xpath as selector
-					 if(curStepsList.get(curStepsListIndx).accessorType.equals("className")){
-						 btnToClick = (new WebDriverWait(driver, 20))
+					if(!curStepsList.get(curStepsListIndx).urlToTest.equals("") 
+												&& !curStepsList.get(curStepsListIndx).urlToTest.equals("sameUrl") 
+												&& !curStepsList.get(curStepsListIndx).urlToTest.equals(curUrlBeingTested)){
+						driver.get(curStepsList.get(curStepsListIndx).urlToTest);
+					    //driver.navigate().to(curStepsList.get(curStepsListIndx).urlToTest);
+					    //driver.manage().window().maximize();
+					    //driver.switchTo().window(driver.getWindowHandle());
+
+					}
+					// Can use class, id, or xpath as selector
+					if(curStepsList.get(curStepsListIndx).accessorType.equals("className")){
+						btnToClick = (new WebDriverWait(driver, 20))
 					    		  .until(ExpectedConditions.elementToBeClickable(By.className(curStepsList.get(curStepsListIndx).accessorName)));
 						 
-					 }
-					 else
-					 if(curStepsList.get(curStepsListIndx).accessorType.equals("id")){
-						 btnToClick = (new WebDriverWait(driver, 20))
+					}
+					else
+					if(curStepsList.get(curStepsListIndx).accessorType.equals("id")){
+						btnToClick = (new WebDriverWait(driver, 20))
 					    		  .until(ExpectedConditions.elementToBeClickable(By.id(curStepsList.get(curStepsListIndx).accessorName)));
 						 
-					 }
-					 else
-					 if(curStepsList.get(curStepsListIndx).accessorType.equals("xpath")){
-						 btnToClick = (new WebDriverWait(driver, 20))
+					}
+					else
+					if(curStepsList.get(curStepsListIndx).accessorType.equals("xpath")){
+						btnToClick = (new WebDriverWait(driver, 20))
 					    		  .until(ExpectedConditions.elementToBeClickable(By.xpath(curStepsList.get(curStepsListIndx).accessorName)));
-						 System.out.println("AFTER XPath>>>>>>>>>>>>>>>>>>>>>>>>>");
-					 }
-					 // Haven't yet added rightClick stuff - haven't needed it yet			 
-					 btnToClick.click();
+						System.out.println("AFTER XPath>>>>>>>>>>>>>>>>>>>>>>>>>");
+					}
+					else // comboBox is done in 2 steps because we don't know what type of accessor will be passed (id, xpath, classname)
+					if(curStepsList.get(curStepsListIndx).accessorType.equals("select")){
+						//Select selectBox = new Select(driver.findElement(By.id(elementId)));
+						Select selectBox = new Select(btnToClick);
+						//selectBox.selectByValue(curStepsList.get(curStepsListIndx).accessorName);
+						if(curStepsList.get(curStepsListIndx).clickType.equals("index")){
+							selectBox.selectByIndex(Integer.parseInt(curStepsList.get(curStepsListIndx).accessorName));
+						}
+						else{ // Must be accessing the comboBox by string
+							selectBox.selectByValue(curStepsList.get(curStepsListIndx).accessorName);
+						}
+					}
+
+					// Haven't yet added rightClick stuff - haven't needed it yet			 
+					if(btnToClick != null){
+						btnToClick.click();
+					}
 					// Now thread sleep for however long specified while testing occurs 
 					//setTimeout(() -> checkForNextStep(), curStepsList.get(curStepsListIndx).duration * 1000);
 				    try {
