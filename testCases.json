@@ -1,25 +1,22 @@
 [
   {
     "testCaseId": "jfTestCase1",
-    "testCaseDescrip": "BC playlist run for 5 minutes, then kill browser.",
+    "testCaseDescrip": "BC - run Big Buck Bunny for 5 minutes, then exit.",
     "stepsList": [
-	  {
-        //"urlToTest": "http://engtestsite.com/web-plugins/bc/v5/fw_vcs.html",
-		"urlToTest": "http://engtestsite.com/web-plugins/bc/v5/ima_vcs.html",
+      {
+        "urlToTest": "http://localhost:8000/bcTestPlayers/ima_vcs.html",
         "accessorType": "id",
         "accessorName": "sdkChoice4",
         "duration": 2,
         "clickType": "leftClick"
       },
-
-	  {
+      {
         "urlToTest": "sameUrl",
         "accessorType": "id",
         "accessorName": "ctrlAdsContainer",
         "duration": 2,
         "clickType": "leftClick"
       },
-
       {
         "urlToTest": "sameUrl",
         "accessorType": "select",
@@ -52,7 +49,7 @@
         "urlToTest": "sameUrl",
         "accessorType": "className",
         "accessorName": "vjs-big-play-button",
-        "duration": 300,
+        "duration": 183,
         "clickType": "leftClick"
       },
       {
@@ -65,10 +62,94 @@
     ],
     "prodsToCheck": "dcr",
     "valsToCheck": "c27,c51,c52,cr",
+	"valsToCompare":"c27,c51,c52,cr",
     "baseFileName": "base_jfTestCase1.txt"
   },
+  
   {
     "testCaseId": "jfTestCase2",
+    "testCaseDescrip": "BC - run video for 1 minute. Then rewind 20s. Then run for 10 more secs. Then FF 20s.",
+    "stepsList": [
+      {
+        "urlToTest": "http://localhost:8000/bcTestPlayers/ima_vcs.html",
+        "accessorType": "id",
+        "accessorName": "sdkChoice4",
+        "duration": 2,
+        "clickType": "leftClick"
+      },
+      {
+        "urlToTest": "sameUrl",
+        "accessorType": "id",
+        "accessorName": "ctrlAdsContainer",
+        "duration": 2,
+        "clickType": "leftClick"
+      },
+      {
+        "urlToTest": "sameUrl",
+        "accessorType": "select",
+        "accessorName": "0",
+        "duration": 2,
+        "clickType": "index"
+      },
+      {
+        "urlToTest": "sameUrl",
+        "accessorType": "id",
+        "accessorName": "vodSource",
+        "duration": 2,
+        "clickType": "leftClick"
+      },
+      {
+        "urlToTest": "sameUrl",
+        "accessorType": "select",
+        "accessorName": "2",
+        "duration": 2,
+        "clickType": "index"
+      },
+      {
+        "urlToTest": "sameUrl",
+        "accessorType": "id",
+        "accessorName": "applyBtn",
+        "duration": 4,
+        "clickType": "leftClick"
+      },
+      {
+        "urlToTest": "sameUrl",
+        "accessorType": "className",
+        "accessorName": "vjs-big-play-button",
+        "duration": 60,
+        "clickType": "leftClick"
+      },
+      {
+        "urlToTest": "sameUrl",
+        "accessorType": "id",
+        "accessorName": "setStreamPositionBack",
+        "duration": 10,
+        "clickType": "leftClick"
+      },
+	  {
+        "urlToTest": "sameUrl",
+        "accessorType": "id",
+        "accessorName": "setStreamPositionForward",
+        "duration": 10,
+        "clickType": "leftClick"
+      },
+	  
+      {
+        "urlToTest": "endTestCase",
+        "accessorType": "",
+        "accessorName": "",
+        "duration": 0,
+        "clickType": ""
+      }
+    ],
+    "prodsToCheck": "dcr",
+    "valsToCheck": "c27,c51,c52,cr,evdata",
+	"valsToCompare":"c27,c51,c52,cr",
+    "baseFileName": "base_jfTestCase2.txt"
+  },
+
+  {
+    "testCaseId": "jfTestCase3",
     "testCaseDescrip": "",
     "stepsList": [
       {
@@ -88,6 +169,7 @@
     ],
     "prodsToCheck": "dcr",
     "valsToCheck": "c27,c51,c52,cr",
-    "baseFileName": "base_jfTestCase2.txt"
+	"valsToCompare":"c27,c51,c52,cr",
+    "baseFileName": "base_jfTestCase3.txt"
   }
 ]

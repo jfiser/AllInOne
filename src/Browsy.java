@@ -242,7 +242,8 @@ public static void main(String[] args) {
 					// if endTest - run next testcase
 					if(curStepsList.get(curStepsListIndx).urlToTest.equals("endTestCase")){
 						// Check to see if this is the last testCase in the batch
-						if(!_testCaseToRun.equals("batch") || i == testCaseArr.size()-1){
+						//if(!_testCaseToRun.equals("batch") || i == testCaseArr.size()-1){
+						if(i == testCaseArr.size()-1){
 							killBrowser();
 							System.out.println("after killBrowser");
 							return;
@@ -256,7 +257,8 @@ public static void main(String[] args) {
 					else // end of all test cases - so kill browser sessions
 					if(curStepsList.get(curStepsListIndx).urlToTest.equals("killBrowser")){
 						// Check to see if this is the last testCase in the batch
-						if(!_testCaseToRun.equals("batch") || i == testCaseArr.size()-1){
+						//if(!_testCaseToRun.equals("batch") || i == testCaseArr.size()-1){
+						if(i == testCaseArr.size()-1){
 							killBrowser();
 							System.out.println("after killBrowser");
 							return;
