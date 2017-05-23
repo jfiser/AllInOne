@@ -35,7 +35,7 @@ private static Boolean getCompareFiles(){
 }
 public static String[][] compare(){
 	String baseVal = "", curVal = "", pingType = "";
-	String[] baseValArr;
+	String[] baseValArr = null;
 	ArrayList<String> baseSelectedValsArr = new ArrayList<String>();
 	ArrayList<String> curSelectedValsArr = new ArrayList<String>();
 	Boolean pingDiff = false;
@@ -54,6 +54,8 @@ public static String[][] compare(){
 	
 	// Clear these arrays out each time
 	String valsToCheck = Browsy.curTestCase.valsToCheck;
+	String valsToCompare = Browsy.curTestCase.valsToCompare;
+	String prodsToCheck = Browsy.curTestCase.prodsToCheck;
 	//System.out.println("valsToCheck: " + valsToCheck);
 
 	Boolean pingDiff_testCase = false;
@@ -76,6 +78,10 @@ public static String[][] compare(){
 				if(valsToCheck.indexOf(baseValArr[0]) == -1){
 					continue;
 				}
+				// Check to see if this is one of the prd(s) (products) we're checking for
+				if(baseValArr[0].equals("prd") && prodsToCheck.indexOf(baseValArr[1]) == -1){
+					continue;
+				}
 			}
 			else{
 				baseVal = "NONE";
@@ -93,11 +99,11 @@ public static String[][] compare(){
 			else{
 				curVal = "NONE";
 			}
-			
-			if(!baseVal.equals(curVal)){
+			// Only compare values in the valsToCompare String
+			if(!baseVal.equals(curVal) && baseValArr != null && valsToCompare.indexOf(baseValArr[0]) != -1){
 				GuiPane.addTextToPane("DIFF - Baseline: " + baseVal + " ; " + "Current: " + curVal + "\n");
-				pingDiff = true;
-				pingDiff_testCase = true;
+				pingDiff = true; // is this ping different from the baseline ping
+				pingDiff_testCase = true; // were there any differences at all in this test case?
 			}
 			else{
 				GuiPane.addTextToPane("SAME - " + baseVal + "\n");					

@@ -30,9 +30,12 @@ public static ArrayList<TestCase> createTestCaseArr() {
 	}
 	// keep testCaseArr as a local var in this func. Use Browsy.testCaseArr for official testCaseArr
 	ArrayList<TestCase> testCaseArr = gson.fromJson(reader, typeOfT); // contains the whole reviews list
-	for(int i = 0; i < testCaseArr.size(); i++){
+	/*for(int i = 0; i < testCaseArr.size(); i++){
+		System.out.println("size: " + testCaseArr.size());
+		System.out.println("JSON: <" + testCaseArr.get(i) + ">");
+		System.out.println("JSON: <" + testCaseArr.get(i).stepsList.get(i) + ">");
 		System.out.println("JSON: <" + testCaseArr.get(i).stepsList.get(i).accessorType + ">");
-	}
+	}*/
 	return testCaseArr;
 }
 public static void saveTestCaseArr(){
