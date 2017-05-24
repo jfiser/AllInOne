@@ -4,7 +4,7 @@
     "testCaseDescrip": "BC - run Big Buck Bunny for 5 minutes, then exit.",
     "stepsList": [
       {
-        "urlToTest": "http://localhost:8000/bcTestPlayers/ima_vcs.html",
+        "urlToTest": "http://engtestsite.com/joel/autoTest/bcTestPlayers/ima_vcs.html",
         "accessorType": "id",
         "accessorName": "sdkChoice4",
         "duration": 2,
@@ -49,7 +49,7 @@
         "urlToTest": "sameUrl",
         "accessorType": "className",
         "accessorName": "vjs-big-play-button",
-        "duration": 183,
+        "duration": 300,
         "clickType": "leftClick"
       },
       {
