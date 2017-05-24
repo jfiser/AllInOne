@@ -49,11 +49,11 @@
         "urlToTest": "sameUrl",
         "accessorType": "className",
         "accessorName": "vjs-big-play-button",
-        "duration": 300,
+        "duration": 400,
         "clickType": "leftClick"
       },
       {
-        "urlToTest": "endTestCase",
+        "urlToTest": "killBrowser",
         "accessorType": "",
         "accessorName": "",
         "duration": 0,
@@ -62,10 +62,9 @@
     ],
     "prodsToCheck": "dcr",
     "valsToCheck": "c27,c51,c52,cr",
-	"valsToCompare":"c27,c51,c52,cr",
+    "valsToCompare": "c27,c51,c52,cr",
     "baseFileName": "base_jfTestCase1.txt"
   },
-  
   {
     "testCaseId": "jfTestCase2",
     "testCaseDescrip": "BC - run video for 1 minute. Then rewind 20s. Then run for 10 more secs. Then FF 20s.",
@@ -126,37 +125,11 @@
         "duration": 10,
         "clickType": "leftClick"
       },
-	  {
+      {
         "urlToTest": "sameUrl",
         "accessorType": "id",
         "accessorName": "setStreamPositionForward",
         "duration": 10,
-        "clickType": "leftClick"
-      },
-	  
-      {
-        "urlToTest": "endTestCase",
-        "accessorType": "",
-        "accessorName": "",
-        "duration": 0,
-        "clickType": ""
-      }
-    ],
-    "prodsToCheck": "dcr",
-    "valsToCheck": "c27,c51,c52,cr,evdata",
-	"valsToCompare":"c27,c51,c52,cr",
-    "baseFileName": "base_jfTestCase2.txt"
-  },
-
-  {
-    "testCaseId": "jfTestCase3",
-    "testCaseDescrip": "",
-    "stepsList": [
-      {
-        "urlToTest": "http://players.brightcove.net/1660646664/HydB02Dyb_default/index.html?playlistId\u003d5047277540001",
-        "accessorType": "className",
-        "accessorName": "vjs-big-play-button",
-        "duration": 25,
         "clickType": "leftClick"
       },
       {
@@ -168,8 +141,8 @@
       }
     ],
     "prodsToCheck": "dcr",
-    "valsToCheck": "c27,c51,c52,cr",
-	"valsToCompare":"c27,c51,c52,cr",
-    "baseFileName": "base_jfTestCase3.txt"
+    "valsToCheck": "c27,c51,c52,cr,evdata",
+    "valsToCompare": "c27,c51,c52,cr",
+    "baseFileName": "base_jfTestCase2.txt"
   }
-]
+ ]
