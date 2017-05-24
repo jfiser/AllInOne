@@ -208,7 +208,7 @@ public static void main(String[] args) {
  public static void doTest(String _testCaseToRun){
 	Thread browserThread = new Thread(new Runnable() {
         public void run() {
-        	startBrowser();			 
+        	//startBrowser();			 
 			WebElement btnToClick = null;
 			for(int i = 0; i < testCaseArr.size(); i++){
 				System.out.println("testCaseId: " + testCaseArr.get(i).testCaseId);
@@ -216,7 +216,7 @@ public static void main(String[] args) {
 					batchRun = true;
 					curStepsList = testCaseArr.get(i).stepsList;
 					curTestCase = testCaseArr.get(i);
-					 
+		        	startBrowser();			 
 				}
 				else{
 					batchRun = false;
@@ -224,6 +224,7 @@ public static void main(String[] args) {
 						curStepsList = testCaseArr.get(i).stepsList;
 						//curStepsList = stepsList;
 						curTestCase = testCaseArr.get(i);
+						startBrowser();	
 					}
 					else{
 						continue;
@@ -243,7 +244,10 @@ public static void main(String[] args) {
 					if(curStepsList.get(curStepsListIndx).urlToTest.equals("endTestCase")){
 						// Check to see if this is the last testCase in the batch
 						//if(!_testCaseToRun.equals("batch") || i == testCaseArr.size()-1){
-						if(i == testCaseArr.size()-1){
+						killBrowser();
+						curSessionPingArr = Comparator.compare();
+						continue;
+						/*if(i == testCaseArr.size()-1){
 							killBrowser();
 							System.out.println("after killBrowser");
 							return;
@@ -252,13 +256,16 @@ public static void main(String[] args) {
 							curSessionPingArr = Comparator.compare();
 							System.out.println("after compare");
 							continue;
-						}
+						}*/
 					}
 					else // end of all test cases - so kill browser sessions
 					if(curStepsList.get(curStepsListIndx).urlToTest.equals("killBrowser")){
 						// Check to see if this is the last testCase in the batch
 						//if(!_testCaseToRun.equals("batch") || i == testCaseArr.size()-1){
-						if(i == testCaseArr.size()-1){
+						killBrowser();
+						curSessionPingArr = Comparator.compare();
+						continue;
+						/*if(i == testCaseArr.size()-1){
 							killBrowser();
 							System.out.println("after killBrowser");
 							return;
@@ -267,7 +274,7 @@ public static void main(String[] args) {
 							curSessionPingArr = Comparator.compare();
 							System.out.println("after compare");
 							continue;
-						}
+						}*/
 					}
 						 
 					 // go to the URL to test unless the URL param is set to "sameUrl"
