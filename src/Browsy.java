@@ -56,12 +56,6 @@ static int curStepsListIndx = 0;
 static ArrayList<String> curTestCasePingArr = new ArrayList<String>();
 static Boolean batchRun = false;
 
-//static Array<Steps> stepsList = new Array<Steps>();
-
-//stepsList[0] = "className|vjs-big-play-button";
-//stepsList.push("className|vjs-big-play-button");
-	//guiPane.addTextToPane("str"); 
-
 public static void main(String[] args) {	
 	//TestCaseSetup testCaseSetup = new TestCaseSetup();
 	testCaseArr = TestCaseSetup.createTestCaseArr();
@@ -124,19 +118,6 @@ public static void main(String[] args) {
 	        	}
 	        	//basicTests.handlePing(urlStr);
         	}
-			
-     		/*if(!gotPlayerVersion && urlStr.indexOf("metrics.brightcove.com") != -1){
-    			gotPlayerVersion = true;
-     			playerVersion = thirdPartyPlayer.getPlayerVersion(urlStr);
-     			
-    			//guiPane.addTextToPane(">>>>>>>>>> Player Version: " + playerVersion + '\n');
-				System.out.println(">>>>>>>>>> Player Version: " + playerVersion);
-    			try {
-					FileUtils.writeStringToFile(bcPlayerVersionFile, playerVersion, Charset.defaultCharset());
-				} catch (IOException e) {
-					e.printStackTrace();
-				} 
-    		}*/
         	
             return null;
          }
@@ -190,16 +171,10 @@ public static void main(String[] args) {
 	har.writeTo(harFile);
     
     System.out.println("har: " + har);
-    //bmpProxy.stop();
-    //driver.quit();
-    //Comparator.getPingFileCreateArray("currentRunPings.txt", "cur");
-    //curSessionPingArr = Comparator.compare();
-    //if(hasId3){
-    	//ID3_Validator.check_D_Pings(curSessionPingArr);
-    //}
  }
  public static void startBrowser(){
 	try {
+		curTestCasePingArr.clear(); // clear out any pings from previous test cases
 		setProxy();
 	} catch (IOException e) {
 		e.printStackTrace();
@@ -210,24 +185,24 @@ public static void main(String[] args) {
         public void run() {
         	//startBrowser();			 
 			WebElement btnToClick = null;
+			// Iterate through the test cases
 			for(int i = 0; i < testCaseArr.size(); i++){
 				System.out.println("testCaseId: " + testCaseArr.get(i).testCaseId);
 				if(_testCaseToRun.equals("batch")){
 					batchRun = true;
 					curStepsList = testCaseArr.get(i).stepsList;
 					curTestCase = testCaseArr.get(i);
-		        	startBrowser();			 
+					startBrowser();			 
 				}
 				else{
 					batchRun = false;
 					if(testCaseArr.get(i).testCaseId.equals(_testCaseToRun)){
 						curStepsList = testCaseArr.get(i).stepsList;
-						//curStepsList = stepsList;
 						curTestCase = testCaseArr.get(i);
 						startBrowser();	
 					}
 					else{
-						continue;
+						continue; // iterating through looking for specific testcase
 					}
 				}
 				//}
@@ -239,42 +214,15 @@ public static void main(String[] args) {
 				// Execute the steps one by one
 				for (int curStepsListIndx = 0; curStepsListIndx < curStepsList.size(); curStepsListIndx++) {
 					System.out.println(curStepsList.get(curStepsListIndx));
-					//btnToClick = null;
-					// if endTest - run next testcase
-					if(curStepsList.get(curStepsListIndx).urlToTest.equals("endTestCase")){
-						// Check to see if this is the last testCase in the batch
-						//if(!_testCaseToRun.equals("batch") || i == testCaseArr.size()-1){
+					if(curStepsList.get(curStepsListIndx).urlToTest.equals("killBrowser")){						
 						killBrowser();
-						curSessionPingArr = Comparator.compare();
-						continue;
-						/*if(i == testCaseArr.size()-1){
-							killBrowser();
-							System.out.println("after killBrowser");
-							return;
+						//curSessionPingArr = Comparator.compare();
+						if(_testCaseToRun.equals("batch")){ // && i != testCaseArr.size()-1){
+							continue;
 						}
 						else{
-							curSessionPingArr = Comparator.compare();
-							System.out.println("after compare");
-							continue;
-						}*/
-					}
-					else // end of all test cases - so kill browser sessions
-					if(curStepsList.get(curStepsListIndx).urlToTest.equals("killBrowser")){
-						// Check to see if this is the last testCase in the batch
-						//if(!_testCaseToRun.equals("batch") || i == testCaseArr.size()-1){
-						killBrowser();
-						curSessionPingArr = Comparator.compare();
-						continue;
-						/*if(i == testCaseArr.size()-1){
-							killBrowser();
-							System.out.println("after killBrowser");
 							return;
 						}
-						else{
-							curSessionPingArr = Comparator.compare();
-							System.out.println("after compare");
-							continue;
-						}*/
 					}
 						 
 					 // go to the URL to test unless the URL param is set to "sameUrl"
@@ -325,43 +273,31 @@ public static void main(String[] args) {
 					// Now thread sleep for however long specified while testing occurs 
 					//setTimeout(() -> checkForNextStep(), curStepsList.get(curStepsListIndx).duration * 1000);
 				    try {
-						 System.out.println(">>>>>>>>>Sleeping for: " + curStepsList.get(curStepsListIndx).duration);
-	
+				    	System.out.println(">>>>>>>>>Sleeping for: " + curStepsList.get(curStepsListIndx).duration);
 				    	Thread.sleep(curStepsList.get(curStepsListIndx).duration * 1000);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}	
 				 } 
-	 
 			 }
          }
     });  
     browserThread.start();
 
  }
-/* public static void setTimeout(Runnable runnable, int delay){
-    new Thread(() -> {
-        try {
-            Thread.sleep(delay);
-            runnable.run();
-        }
-        catch (Exception e){
-            System.err.println(e);
-        }
-    }).start();
-}*/
  public static void killBrowser(){
  	driver.navigate().refresh(); // refresh the browser so we get the final pings
- 	/*try {
-		Thread.sleep(3000);
-	} catch (InterruptedException e) {
-		// TODO Auto-generated catch block
+ 	// Now sleep to give the onunload ping time to fire so it gets associated with the correct test case
+ 	try{
+		Thread.sleep(4000);
+		System.out.println(">>>>>>=>>>>AFTER THREAD SLEEP 4000");
+	}
+ 	catch (InterruptedException e){
 		e.printStackTrace();
-	}*/
+	}
+ 	
  	bmpProxy.stop();
  	driver.quit();
- 	
-	System.out.println("curTestCase.testCaseId: " + curTestCase.testCaseId);
 	if(!batchRun){
 	    guiPane.enableBtnSetBaseline();
 	}
